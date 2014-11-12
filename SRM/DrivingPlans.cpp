@@ -8,92 +8,88 @@
 #define PB push_back
 #define MP make_pair
 #define SZ(a) ((int) a.size())
+#define ALL(a) a.begin(), a.end()
 #define PII pair<int, int>
 #define mem(a) memset(a, 0, sizeof(a))
 #define memm(a) memset(a, -1, sizeof(a))
 #define REP(i, n) for (int i = 0; i < (int) (n); ++i)
 #define REPP(i, a, b) for (int i = (int) (a); i <= (int) (b); ++i)
-#define INF 2000000000
+#define INF 0x3f3f3f3f
 #define MOD 1000000009
-#define N 2222
+#define N 2111
 
 using namespace std;
 
-int dp[N], d[2][N], n, vis[N], dis[N];
-vector<int> mp[N], v[N];
-queue<int> q;
+vector<int> e[N];
+int imp[N], use[N], dis[N], vis[N];
+int fi[N << 1], ne[N << 1], en[N << 1], v[N << 1], tot;
+int dp[N], target;
 
-struct cmp{
-	bool operator () (const PII& a, const PII& b) {
-		return a.first > b.first;
-	}
-};
-
-void dijkstra(int x, int dis[N]) {
-	priority_queue<PII, vector<PII>, cmp > q;
-	REPP(i, 1, n) dis[i] = INF, vis[i] = 0;
-	dis[x] = 0, vis[x] = 1;
-	REPP(i, 1, n) if (i != x) q.push(MP(INF, i));
-	int tot = 1, good = x;
-	while (tot < n) {
-		REP(i, SZ(mp[good])) if (!vis[mp[good][i]] && dis[mp[good][i]] > dis[good] + v[good][i]) {
-			dis[mp[good][i]] = dis[good] + v[good][i];
-			q.push(MP(dis[mp[good][i]], mp[good][i]));
-		}
-		good = q.top().second;
-		vis[good] = 1;
-		q.pop(); tot++;
-	}
-	if (x == 1) {
-		REPP(i, 1, n) d[0][i] = dis[i];
-	}
-	else {
-		REPP(i, 1, n) d[1][i] = dis[i];
-	}
+void add(int x, int y, int z) {
+	ne[++tot] = fi[x], fi[x] = tot, en[tot] = y, v[tot] = z;
 }
 
-void add(int &x, int y) {
-	x += y;
-	if (x >= MOD) x -= MOD;
+void dijkstra() {
+	memm(dis), mem(vis);
+	dis[target] = 0;
+	priority_queue<PII, vector<PII>, greater<PII> > q;
+	q.push(MP(dis[target], target));
+	while (!q.empty()) {
+		int x = q.top().second; q.pop();
+		if (vis[x]) continue;
+		vis[x] = 1;
+		for (int go = fi[x]; go; go = ne[go]) {
+			int y=  en[go];
+			if (dis[y] == -1 || dis[y] > dis[x] + v[go]) {
+				dis[y] = dis[x] + v[go];
+				if (imp[x] == 1 || use[y] || use[x]) imp[y] = 1;
+				else imp[y] = -1;
+				q.push(MP(dis[y], y));
+			}
+			else if (dis[y] == dis[x] + v[go]) {
+				if (imp[x] == 1 || use[x] || use[y]) imp[y] = 1;
+			}
+		}
+	}
 }
 
 int dfs(int x) {
+	if (x == 1) return 1;
 	if (vis[x]) return dp[x];
 	vis[x] = 1;
-	REP(i, SZ(mp[x])) {
-		if (d[1][x] == d[1][mp[x][i]] - v[x][i]) add(dp[x], dfs(mp[x][i]));
+	for (int go = fi[x]; go; go = ne[go]) {
+		int y = en[go];
+		if (dis[y] == dis[x] + v[go]) {
+			dp[x] += dfs(y);
+			if (dp[x] >= MOD) dp[x] -= MOD;
+		}
 	}
 	return dp[x];
 }
 
-bool ZERO(vector<int>& A, vector<int>& B, vector<int>& C) {
-	REP(i, SZ(C)) if (C[i] == 0) {
-		if (d[0][A[i]] + d[1][B[i]] == d[1][1] || d[1][A[i]] + d[0][B[i]] == d[1][1]) return 1;
-	}
-	return 0;
-}
-
 class DrivingPlans {
 	public:
-	int count(int NN, vector <int> A, vector <int> B, vector <int> C) {
-		n = SZ(A);
-		REP(i, n) {
-			mp[A[i]].push_back(B[i]), v[A[i]].push_back(C[i]);
-			mp[B[i]].push_back(A[i]), v[B[i]].push_back(C[i]);
+	int count(int n, vector <int> A, vector <int> B, vector <int> C) {
+		int sz = SZ(A);
+		target = n;
+		REP(i, sz) {
+			add(A[i], B[i], C[i]);
+			add(B[i], A[i], C[i]);
+			if (C[i] == 0) use[A[i]] = use[B[i]] = 1;
 		}
-		n = NN;
-		dijkstra(1, dis); dijkstra(n, dis);
-		if (ZERO(A, B, C)) return -1;
-		mem(vis); vis[1] = dp[1] = 1;
-		dfs(n);
-		return dp[n];
+		dijkstra();
+		if (imp[1] == 1) return -1;
+		else {
+			mem(vis);
+			dfs(n);
+			return dp[n];
+		}
 	}
-
+	
 	
 // BEGIN CUT HERE
 	public:
-	void run_test(int Case) { 
-		if ((Case == -1) || (Case == 0)) test_case_0(); if ((Case == -1) || (Case == 1)) test_case_1(); if ((Case == -1) || (Case == 2)) test_case_2(); }
+	void run_test(int Case) { if ((Case == -1) || (Case == 0)) test_case_0(); if ((Case == -1) || (Case == 1)) test_case_1(); if ((Case == -1) || (Case == 2)) test_case_2(); }
 	private:
 	template <typename T> string print_array(const vector<T> &V) { ostringstream os; os << "{ "; for (typename vector<T>::const_iterator iter = V.begin(); iter != V.end(); ++iter) os << '\"' << *iter << "\","; os << " }"; return os.str(); }
 	void verify_case(int Case, const int &Expected, const int &Received) { cerr << "Test Case #" << Case << "..."; if (Expected == Received) cerr << "PASSED" << endl; else { cerr << "FAILED" << endl; cerr << "\tExpected: \"" << Expected << '\"' << endl; cerr << "\tReceived: \"" << Received << '\"' << endl; } }
@@ -103,7 +99,7 @@ class DrivingPlans {
 
 // END CUT HERE
 
-};
+};//Created by yuzhou627
 
 // BEGIN CUT HERE
 int main() {
