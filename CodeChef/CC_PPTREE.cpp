@@ -76,6 +76,7 @@ int main() {
 			add(x, y, z);
 			add(y, x, z);
 		}
+		
 		ans = 0;
 		insert(0);
 		dfs(1, 0, 0);
