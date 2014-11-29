@@ -1,81 +1,110 @@
-const LL BASE = 1000000000;//1e9
+const LL BASE = 1e9;
 
 struct BigInteger {
-	vector<LL> a;
+	vector<LL> v; //v中倒序存放数字
 	
 	BigInteger () {}
 	BigInteger (LL x) { Init(x); }
 	
 	void Init(LL x) {
-		a.clear();
+		v.clear();
 		if (x == 0) {
-			a.push_back(0);
+			v.push_back(0);
 			return ;
 		}
 		while (x) {
-			a.push_back(x % BASE);
+			v.push_back(x % BASE);
 			x /= BASE;
 		}
 	}
 
 	BigInteger operator + (const BigInteger &b) const {
-		LL m = max(SZ(a), SZ(b.a)) + 1;
+		LL m = max(v.size(), b.v.size()) + 1;
 		BigInteger c;
-		c.a.resize(m);//全0，注意不能c(m)这样写，因为这样是把c初始化成m
+		c.v.resize(m);//全0，注意不能c(m)这样写，因为这样是把c初始化成m
 		LL st = 0, tmp, aa, bb;
 
 		REP(i, m) {
-			if (i >= SZ(a)) aa = 0;
-			else aa = a[i];
-			if (i >= SZ(b.a)) bb = 0;
-			else bb = b.a[i];
+			if (i >= v.size()) aa = 0;
+			else aa = v[i];
+			if (i >= b.v.size()) bb = 0;
+			else bb = b.v[i];
 			tmp = aa + bb + st;
 			if (tmp >= BASE) st = 1, tmp -= BASE;
 			else st = 0;
-			c.a[i] = tmp;
+			c.v[i] = tmp;
 		}
-		while (SZ(c.a) > 1 && c.a.back() == 0) c.a.pop_back();
+		while (c.v.size() > 1 && c.v.back() == 0) c.v.pop_back();
 		return c;
 	}
 
 	BigInteger operator * (const BigInteger &b) const {
 		BigInteger c; 
-		c.a.resize(SZ(a) + SZ(b.a)); //max digit a+b 全0
+		c.v.resize(v.size() + b.v.size()); //max digit a+b 全0
 		LL st = 0, tmp;
-		REP(i, SZ(a)) {
-			REP(j, SZ(b.a)) {
-				tmp = a[i] * b.a[j] + c.a[i + j] + st; //tmp < base^2
-				c.a[i + j] = tmp % BASE;
+		REP(i, v.size()) {
+			REP(j, b.v.size()) {
+				tmp = v[i] * b.v[j] + c.v[i + j] + st; //tmp < base^2
+				c.v[i + j] = tmp % BASE;
 				st = tmp / BASE; //st < base
 			}
-			c.a[i + SZ(b.a)] = st, st = 0;
+			c.v[i + b.v.size()] = st, st = 0;
 		}
-		while (SZ(c.a) > 1 && c.a.back() == 0) c.a.pop_back(); 
+		while (c.v.size() > 1 && c.v.back() == 0) c.v.pop_back(); 
 		return c;
 	}
 
 	BigInteger operator / (const LL &n) const { //n != 0
+		if (n == 0) {
+			cout << "Error!" << endl;
+			return 0;
+		}
+
 		BigInteger b;
-		b.a.resize(SZ(a));
+		b.v.resize(v.size());
 		LL st = 0, tmp;
-		for (int i = SZ(a) - 1, j = 0; i >= 0; --i, j++) {
-			tmp = st * BASE + a[i];
-			b.a[j] = tmp / n;
+		for (int i = v.size() - 1, j = 0; i >= 0; --i, j++) {
+			tmp = st * BASE + v[i];
+			b.v[j] = tmp / n;
 			st = tmp % n;
 		}
-		reverse(ALL(b.a));
-		while (SZ(b.a) > 1 && b.a.back() == 0) b.a.pop_back();
+		reverse(b.v.begin(), b.v.end());
+		while (b.v.size() > 1 && b.v.back() == 0) b.v.pop_back();
 		return b;
 	}
-	//除法（除单精）很容易改写成 %，上面的st就是结果。
+
+	LL operator % (const LL &n) const { //n != 0
+		if (n == 0) {
+			cout << "Error!" << endl;
+			return 0;
+		}
+
+		LL st = 0, tmp;
+		for (int i = v.size() - 1, j = 0; i >= 0; --i, j++) {
+			tmp = st * BASE + v[i];
+			st = tmp % n;
+		}
+		return st;
+	}
 };
 
 void output(const BigInteger &num) {
-	printf("%lld", num.a.back()); //最前面没有前导0，后面都是有前导零的。
-	int n = SZ(num.a) - 1;
+	cout << num.v.back(); //最前面没有前导0，后面都是有前导零的
+	int n = num.v.size() - 1;
 	while (n) {
-		n--;
-		printf("%09lld", num.a[n]);
+		cout << setw(9) << setfill('0') << num.v[n--]; //这里改变了cout对于固定宽度的输出的设置
 	}
-	putchar('\n');
+	cout << endl;
+}
+
+BigInteger qp(BigInteger a, LL b) {
+	BigInteger ans(1);
+	while (b) {
+		if (b & 1) {
+			ans = ans * a;
+		}
+		b >>= 1;
+		a = a * a;
+	}
+	return ans;
 }
