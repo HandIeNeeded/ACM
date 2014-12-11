@@ -1,11 +1,9 @@
-void dfsBigSonAndColor(int x, int fa, int deepth, int color)
-{
+void dfsBigSonAndColor(int x, int fa, int deepth, int color){
     vis[x] = 1;
     g[x].size = 1, g[x].fa = fa;
     g[x].dep = deepth, g[x].col = color;
     for (int p = fir[x]; p; p = next[p])
-	if (!vis[e[p]])
-	{
+	if (!vis[e[p]]){
 	    dfsBigSonAndColor(e[p], x, deepth + 1, 1 - color);
 	    g[x].size += g[e[p]].size;
 	    g[e[p]].edLab = lab[p];
