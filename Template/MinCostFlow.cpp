@@ -4,15 +4,15 @@ const int INF = 0x3f3f3f3f;
 
 struct MinCostFlow{
 	int pre[N], dp[N];
-	int fi[N], cost[M << 2], en[M << 2], ne[M << 2], cap[M << 2], edge;
+	int fi[N], ne[M << 2], en[M << 2], cap[M << 2], cost[M << 2], edge;
 	bool vis[N];
 	int source, sink;
 
 	void init(int S, int T) {
-		MST(fi, 0);
-		edge = 1, source = S, sink = T;
+		source = S, sink = T;
+		MST(fi, 0), edge = 1;
 	}
-
+	
 	void _add(int x, int y, int z, int w) {
 		ne[++edge] = fi[x], fi[x] = edge, en[edge] = y, cap[edge] = z, cost[edge] = w;
 	}
@@ -23,13 +23,11 @@ struct MinCostFlow{
 	}
 
 	bool spfa() {
-		MST(vis, 0), MST(dp, 0x3f), MST(pre, 0);
+		MST(vis, 0), MST(dp, 0x3f);
 		queue<int> q;
-		q.push(source);
-		dp[source] = 0;
-		vis[source] = 1;
+		q.push(source), vis[source] = 1, dp[source] = 0;
 
-		while(q.size()) {
+		while (q.size()) {
 			int x = q.front(); q.pop();
 			for (int go = fi[x]; go; go = ne[go]) if (cap[go] > 0) {
 				int y = en[go];
@@ -37,19 +35,18 @@ struct MinCostFlow{
 					dp[y] = dp[x] + cost[go];
 					pre[y] = go;
 					if (!vis[y]) {
-						q.push(y);
 						vis[y] = 1;
+						q.push(y);
 					}
 				}
 			}
 			vis[x] = 0;
 		}
-		if (dp[sink] == INF) return 0;
-		return 1;
+		return dp[sink] != INF;
 	}
-
-	int mincost(){
-		int ans = 0;
+	
+	pair<int, int> mincost() {
+		int cost = 0, flow = 0;
 		while (spfa()) {
 			int tmp = INF;
 			for (int go = pre[sink]; go; go = pre[en[go ^ 1]]) {
@@ -59,9 +56,9 @@ struct MinCostFlow{
 				cap[go] -= tmp;
 				cap[go ^ 1] += tmp;
 			}
-			ans += tmp * dp[sink];
+			cost += tmp * dp[sink];
+			flow += tmp;
 		}
-		return ans;
+		return make_pair(cost, flow);
 	}
 }AC;
-
