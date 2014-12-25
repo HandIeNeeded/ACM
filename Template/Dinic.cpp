@@ -68,9 +68,7 @@ struct MaxFlow{
 			REPP(i, 1, node) {
 				cur[i] = fi[i];
 			}
-			while (tmp = dfs(source, INF)) {
-				ans += tmp;
-			}
+			ans += dfs(source, INF);
 		}	
 		return ans;
 	}
