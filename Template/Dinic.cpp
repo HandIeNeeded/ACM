@@ -63,7 +63,7 @@ struct MaxFlow{
 	}
 
 	int dinic() {
-		int ans = 0, tmp = 0;
+		int ans = 0;
 		while (bfs()) {
 			REPP(i, 1, node) {
 				cur[i] = fi[i];
