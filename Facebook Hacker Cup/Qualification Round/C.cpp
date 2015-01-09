@@ -21,7 +21,7 @@ int dy[] = {
 };
 
 bool good(int x, int y, int t) {
-	return x >= 1 && x <= n && y >= 1 && y <= m && !g[t][x][y] && mp[x][y] != '#';
+	return x >= 1 && x <= n && y >= 1 && y <= m && mp[x][y] != '#';
 }
 
 string str = "^>v<";
@@ -61,15 +61,6 @@ int main() {
 			cin >> mp[i] + 1;
 		}
 		init();
-		//REP(i, 4) {
-		//	REPP(j, 1, n) {
-		//		REPP(k, 1, m) {
-		//			cout << g[i][j][k] << ' ';
-		//		}
-		//		cout << endl;
-		//	}
-		//	cout << endl;
-		//}
 		int x = -1, y = -1;
 		REPP(i, 1, n) {
 			REPP(j, 1, m) {
@@ -101,7 +92,7 @@ int main() {
 				int tx = x + dx[dir];
 				int ty = y + dy[dir];
 				int c = (clk + 1) & 3;
-				if (good(tx, ty, c) && !vis[tx][ty][c]) {
+				if (good(tx, ty, c) && !g[c][tx][ty] && !vis[tx][ty][c]) {
 					dp[tx][ty][c] = dp[x][y][clk] + 1;
 					vis[tx][ty][c] = 1;
 					if (mp[tx][ty] == 'G') {
@@ -126,4 +117,5 @@ int main() {
 	}
 	return 0;
 }
+
 
