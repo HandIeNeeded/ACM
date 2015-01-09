@@ -101,7 +101,7 @@ int main() {
 				int tx = x + dx[dir];
 				int ty = y + dy[dir];
 				int c = (clk + 1) & 3;
-				if (good(tx, ty, c) && str.find(mp[tx][ty]) < 0 && !vis[tx][ty][c]) {
+				if (good(tx, ty, c) && !vis[tx][ty][c]) {
 					dp[tx][ty][c] = dp[x][y][clk] + 1;
 					vis[tx][ty][c] = 1;
 					if (mp[tx][ty] == 'G') {
@@ -126,5 +126,4 @@ int main() {
 	}
 	return 0;
 }
-
 
