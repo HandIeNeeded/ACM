@@ -1,5 +1,5 @@
 // a^x == b (mod p)
-LL qp(LL a, LL b, LL p){
+LL pow_mod(LL a, LL b, LL p){
 	LL re = 1;
 	while (b){
 		if (b & 1) re = (re * a) % p;
@@ -11,8 +11,8 @@ LL qp(LL a, LL b, LL p){
 
 int log_mod(int a, int b, int p) { 
 	int m, v, e = 1, i;
-	m = (int) sqrt(n + 0.5) + 1;//这里不加1会出错的！
-	v = qp(qp(a, m, p), p - 2, p);
+	m = (int) sqrt(p + 0.5) + 1;//这里不加1会出错的！
+	v = pow_mod(pow_mod(a, m, p), p - 2, p);
 	map<int, int> x;
 	x[1] = 0;
 	for (i = 1; i < m; ++i){
