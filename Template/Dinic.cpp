@@ -7,8 +7,8 @@ struct MaxFlow{
 	int lvl[N], vis[N], cur[N];
 	int fi[N], ne[M << 1], en[M << 1], cap[M << 1];
 	
-	void init(int S, int T, int tot) {
-		source = S, sink = T, node = tot;
+	void init(int S, int T) {
+		source = S, sink = T;
 		MST(fi, 0), edge = 1;
 	}
 
@@ -65,11 +65,9 @@ struct MaxFlow{
 	int dinic() {
 		int ans = 0;
 		while (bfs()) {
-			REPP(i, 1, node) {
-				cur[i] = fi[i];
-			}
+			memcpy(cur, fi, sizeof(fi));
 			ans += dfs(source, INF);
 		}	
 		return ans;
 	}
-}Flow;
+}flow;

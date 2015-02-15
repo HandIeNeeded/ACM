@@ -6,8 +6,8 @@ struct tree{
 	int n;//节点数
 
 	void Init(int x) {//初始化
-		mem(son), mem(dm);
-		mem(fi), tot = 0;
+		MST(son, 0), MST(dm, 0);
+		MST(fi, 0), tot = 0;
 		n = x;
 	}
 

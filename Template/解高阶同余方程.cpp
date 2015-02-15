@@ -1,4 +1,7 @@
 // a^x == b (mod p)
+
+#define LL long long
+
 LL pow_mod(LL a, LL b, LL p){
 	LL re = 1;
 	while (b){

@@ -6,10 +6,9 @@ if diff my.out std.out; then #比较两个输出文件
 echo "AC" #结果相同显示AC
 else
 echo "WA" #结果不同显示WA，并退出
-#cmp std.out my.out
 exit 0
 fi #if的结束标志,与C语言相反，0为真
-done #while的结束标志
+done
 
 #BY Lernece Ray 2014-09-15
 #在终端下，进入当前目录，输入"sh ./cheker.sh",（其中checker.sh为当前shell脚本名） '#'表示单行注释

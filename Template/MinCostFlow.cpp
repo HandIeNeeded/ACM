@@ -23,9 +23,9 @@ struct MinCostFlow{
 	}
 
 	bool spfa() {
-		MST(vis, 0), MST(dp, 0x3f);
+		MST(dp, 0x3f);
 		queue<int> q;
-		q.push(source), vis[source] = 1, dp[source] = 0;
+		q.push(source), vis[source] = 1, dp[source] = pre[source] = 0;
 
 		while (q.size()) {
 			int x = q.front(); q.pop();
@@ -61,4 +61,4 @@ struct MinCostFlow{
 		}
 		return make_pair(cost, flow);
 	}
-}AC;
+}flow;

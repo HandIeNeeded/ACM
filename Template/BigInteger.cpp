@@ -1,3 +1,5 @@
+#define LL long long
+
 const LL BASE = 1e9;
 
 struct BigInteger {
@@ -92,12 +94,12 @@ void output(const BigInteger &num) {
 	cout << num.v.back(); //最前面没有前导0，后面都是有前导零的
 	int n = num.v.size() - 1;
 	while (n) {
-		cout << setw(9) << setfill('0') << num.v[n--]; //这里改变了cout对于固定宽度的输出的设置
+		cout << setw(9) << setfill('0') << num.v[--n]; //这里改变了cout对于固定宽度的输出的设置
 	}
 	cout << endl;
 }
 
-BigInteger qp(BigInteger a, LL b) {
+BigInteger pow(BigInteger a, LL b) {
 	BigInteger ans(1);
 	while (b) {
 		if (b & 1) {

@@ -5,7 +5,7 @@ struct Matrix{
 	double a[N][N];
 
 	Matrix (bool ident = 0) {
-		mem(a);
+		MST(a, 0);
 		if (ident) {
 			REP(i, N) a[i][i] = 1.0;
 		}
@@ -28,7 +28,7 @@ Matrix operator * (const Matrix &a, const Matrix &b) {
 	return c;
 }
 
-Matrix qp(Matrix a, int n) {
+Matrix pow(Matrix a, int n) {
 	Matrix ans(1);
 	while (n) {
 		if (n & 1) ans = ans * a;

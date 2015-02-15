@@ -5,7 +5,7 @@ struct Matrix{
 	int a[N][N];
 
 	Matrix (bool ident = 0) {
-		mem(a);
+		MST(a, 0);
 		if (ident) {
 			REP(i, N) a[i][i] = 1;
 		}

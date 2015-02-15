@@ -126,7 +126,7 @@ sum = 1ll * x  * y + z * w有可能爆int.
 最大团=补图的最大独立集
 
 最小覆盖集=最大匹配
-108.
+108.treap的实现:rotate里面先maintain再x=y.除了maintain其他函数传引用.初始化,0是专用的空节点,treesize=0,weight=INT_MAX,节点从1开始分配.
 
 数学知识：
 

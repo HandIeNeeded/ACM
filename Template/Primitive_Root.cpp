@@ -26,6 +26,7 @@ void getfac(int phi) {
 }
 
 int primitive_root(int p) {
+	getfac(phi);
 	REPP(g, 1, p - 1) {
 		bool bad = 0;
 		REP(i, fac.size()) {
@@ -36,4 +37,5 @@ int primitive_root(int p) {
 		}
 		if (!bad) return g;
 	}
+	return -1;
 }

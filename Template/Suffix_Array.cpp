@@ -20,7 +20,7 @@ struct Suffix_Array {
 
 	void getsa(int m) { // m 字符集大小
 		int *x = t1, *y = t2;
-		mem(c);
+		MST(c, 0);
 		REP(i, n) c[x[i] = s[i]]++; //这里反正都是转化成 int 做
 		REPP(i, 1, m - 1) c[i] += c[i - 1];
 		for (int i = n - 1; i >= 0; --i) sa[--c[x[i]]] = i;

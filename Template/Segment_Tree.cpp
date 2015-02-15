@@ -1,10 +1,15 @@
+#define L (x << 1)
+#define R (x << 1 | 1)
+#define MID ((l + r) >> 1)
+#define LC L, l, MID
+#define RC R, MID + 1, r
+
 void maintain(int x, int l, int r) {
 
 }
 
 void build(int x, int l, int r) {
 	if (l == r) {
-		sum[x] = a[l] % MOD;
 		flag[x] = false, val[x] = 0;
 	}
 	else {

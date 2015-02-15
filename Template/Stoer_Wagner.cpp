@@ -10,7 +10,7 @@ int S, T, minCut, n;
 
 void search() {
 	int Max, tmp;
-	mem(vis), mem(wet);
+	MST(vis, 0), MST(wet, 0);
 	S = T = -1;
 	REP(i, n) {
 		Max = -INF;
@@ -33,7 +33,7 @@ void search() {
 }
 
 int Stoer_Wagner() {
-	mem(combine);
+	MST(combine, 0);
 	int ans = INF;
 	REP(i, n - 1) {
 		search();

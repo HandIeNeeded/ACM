@@ -1,11 +1,10 @@
 struct Point {
 	long long x, y;
-	bool flag;
 
 	Point (long long a = 0, long long b = 0) : x(a), y(b) {}
 
 	int dim() const {
-		return x < 0 || x == 0 && y < 0;
+		return x < 0 || (x == 0 && y < 0);
 	}
 };
 

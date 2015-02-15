@@ -3,7 +3,7 @@ int mp[N][N];
 //vis的作用就是表示当前的点是否在队列里面
 
 void spfa(int x) {
-	memset(dp, 0x3f, sizeof(dp));
+	MST(dp, 0x3f);
 	dp[x] = 0;
 	q[st] = x, vis[st] = 1, pre[x] = 0, en = 1;//所有点从1开始标号
 	while (st < en) {

@@ -48,10 +48,10 @@ LL Closest_Pair(int left, int right) {
 //square of dis 
 // dis need to change dis function and sqr part
 
-//dou version
+//double version
 struct po{
-	dou x, y;
-	po (dou a = 0, dou b = 0) : x(a), y(b) {} 
+	double x, y;
+	po (double a = 0, double b = 0) : x(a), y(b) {} 
 }p[N];
 
 inline bool cmpxy(const po &a, const po &b) {
@@ -61,21 +61,21 @@ inline bool cmpxy(const po &a, const po &b) {
 
 inline bool cmpy(const int &i, const int &j) {return p[i].y < p[j].y;} 
 
-dou sqr(dou x) {return x * x;}
+double sqr(double x) {return x * x;}
 
-dou dis(const int &i, const int &j) {return sqrt(sqr(p[i].x - p[j].x) + sqr(p[i].y - p[j].y));} 
+double dis(const int &i, const int &j) {return sqrt(sqr(p[i].x - p[j].x) + sqr(p[i].y - p[j].y));} 
 
 int tmp[N];
 
-dou Closest_Pair(int left, int right) {
-	dou d = 1e100;
+double Closest_Pair(int left, int right) {
+	double d = 1e100;
 	if (left == right) return d;
 	if (left + 1 == right) {
 		return dis(left, right);
 	}
 	int mid = (left + right) >> 1;
-	dou dl = Closest_Pair(left, mid);
-	dou dr = Closest_Pair(mid + 1, right);
+	double dl = Closest_Pair(left, mid);
+	double dr = Closest_Pair(mid + 1, right);
 	int cnt = 0;
 	d = min(dl, dr);
 	REPP(i, left, right) {
@@ -86,13 +86,12 @@ dou Closest_Pair(int left, int right) {
 	sort(tmp, tmp + cnt, cmpy);
 	REP(i, cnt) {
 		for (int j = i + 1; j < cnt && p[tmp[j]].y - p[tmp[i]].y < d; ++j) { // !!!!!!!!!!!!!!!!!!!! tmp[i] not i
-			dou dd = dis(tmp[i], tmp[j]); // !!!!!!!!!!!!!!!!!
+			double dd = dis(tmp[i], tmp[j]); // !!!!!!!!!!!!!!!!!
 			if (d > dd) d = dd;
 		}
 	}
 	return d;
 }
-
 // call sort(p, p + n, cmpxy) first !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 

@@ -1,25 +1,25 @@
-void add(LL &x, LL y, LL MOD) {
+void add(LL &x, LL y, LL MO) {
 	x += y;
-	if (x >= MOD) x -= MOD;
+	if (x >= MO) x -= MO;
 }
 
-LL mul_mod(LL a, LL b, LL MOD) {
-	a %= MOD;
+LL mul_mod(LL a, LL b, LL MO) {
+	a %= MO;
 	LL re = 0;//not 1!!!!
 	while (b) {
-		if (b & 1) add(re, a, MOD);
+		if (b & 1) add(re, a, MO);
 		b >>= 1;
-		add(a, a, MOD);
+		add(a, a, MO);
 	}
 	return re;
 }
 
-LL qp(LL a, LL b, LL MOD) {
+LL pow_mod(LL a, LL b, LL MO) {
 	LL re = 1;
 	while (b) {
-		if (b & 1) re = mul_mod(re, a, MOD);
+		if (b & 1) re = mul_mod(re, a, MO);
 		b >>= 1;
-		a = mul_mod(a, a, MOD);
+		a = mul_mod(a, a, MO);
 	}
 	return re;
 }
@@ -30,7 +30,7 @@ bool test(LL n, LL b) {
 		m >>= 1;
 		cnt++;
 	}
-	LL ans = qp(b, m, n);
+	LL ans = pow_mod(b, m, n);
 	if (ans == 1 || ans == n - 1) return 1;
 	cnt--;
 	while (cnt >= 0) {

@@ -1,3 +1,5 @@
+#define LL long long
+
 LL a[N], m[N]; //x == a[i] (mod m[i]), i = 0, 1, ... , n - 1
 
 void exgcd( LL a, LL b, LL &d, LL &x, LL &y){

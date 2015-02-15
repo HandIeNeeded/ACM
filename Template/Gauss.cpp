@@ -1,9 +1,9 @@
-struct mat{
+struct Matrix{
 	double v[N][N];
-	mat() {mem(v);}
+	Matrix() {MST(v, 0);}
 };
 
-void gauss(mat& a, int n){
+void gauss(Matrix& a, int n){
 	int i, j ,k, r;
 	for (i = 0; i < n; ++i){
 		r = i;
