@@ -33,7 +33,7 @@ Matrix operator * (const Matrix &a, const Matrix &b) {
 	return c;
 }
 
-Matrix quick_pow(Matrix a, int n) {
+Matrix pow_mod(Matrix a, int n) {
 	Matrix ans(1);
 	while (n) {
 		if (n & 1) ans = ans * a;
