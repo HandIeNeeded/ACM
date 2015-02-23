@@ -7,7 +7,7 @@ void exgcd( LL a, LL b, LL &d, LL &x, LL &y){
 	else exgcd(b, a % b, d, y, x), y -= (a / b) * x;
 }
 
-LL china (LL n, LL *a, LL *m){// i = 0, 1, ... , n - 1
+LL china (LL n, LL *a, LL *mod){// i = 0, 1, ... , n - 1
 	LL re = 0, M = 1;
 	REP(i, n) M *= mod[i];
 	REP(i, n) {
