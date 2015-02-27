@@ -29,20 +29,16 @@ Node* merge(Node *a, Node *b) {
 
 #define PNN pair<Node*, Node*>
 
-PNN split(Node *u, ints) {
+PNN split(Node *u, int s) {
 	if (u == null) return {null, null};
 	Node *l = u->l, *r = u->r;
-	u->l = u->r = null;
-	u->update();
 	if (l->size >= s) {
 		PNN res = split(l, s);
 		u->l = res.second;
-		u->r = r;
 		return {res.first, u->update()};
 	}
 	else {
 		PNN res = split(r, s - (l->size + 1));
-		u->l = l;
 		u->r = res.first;
 		return {u->update(), res.second};
 	}
