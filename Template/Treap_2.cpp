@@ -1,53 +1,49 @@
 const int N = 2e5 + 5;
 
 struct Node{
-	int val, size;
+	int value, size;
 	Node *l, *r;
 
-	void update() {
+	Node* update() {
 		size = l->size + 1 + r->size;
+		return this;
 	}
-}bar[N], *foo, *null, *root;
+}*root, *null;
 
-bool gen(double p) {
-	double x = rand() % RAND_MAX;
-	return x < p;
+bool gen(int a, int b) {
+	return rand() % (a + b) < a;
 }
 
 Node* merge(Node *a, Node *b) {
 	if (a == null) return b;
 	if (b == null) return a;
-	if (gen(1.0 * a->size / (a->size + b->size))) {
+	if (gen(a->size, b->size)) {
 		a->r = merge(a->r, b);
-		a->update();
-		return a;
+		return a->update();
 	}
 	else {
 		b->l = merge(a, b->l);
-		b->update();
-		return b;
+		return b->update();
 	}
-}
+}	
 
-pair<Node*, Node*> split(Node *u, int s) {
-	if(u == null) return {null, null};
+#define PNN pair<Node*, Node*>
+
+PNN split(Node *u, ints) {
+	if (u == null) return {null, null};
 	Node *l = u->l, *r = u->r;
 	u->l = u->r = null;
 	u->update();
 	if (l->size >= s) {
-		pair<Node*, Node*> res = split(l, s);
-		return {res.first, merge(merge(res.second, u), r)};
+		PNN res = split(l, s);
+		u->l = res.second;
+		u->r = r;
+		return {res.first, u->update()};
 	}
 	else {
-		pair<Node*, Node*> res = split(r, s - (l->size + 1));
-		return {merge(l, merge(u, res.first)), res.second};
-	}
-}
-
-void print(Node *u) {
-	if (u != null) {
-		print(u->l);
-		printf("%d ", u->val);
-		print(u->r);
+		PNN res = split(r, s - (l->size + 1));
+		u->l = l;
+		u->r = res.first;
+		return {u->update(), res.second};
 	}
 }
