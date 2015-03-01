@@ -27,9 +27,9 @@ struct BigInteger {
 		LL st = 0, tmp, aa, bb;
 
 		REP(i, m) {
-			if (i >= v.size()) aa = 0;
+			if (i >= (int) v.size()) aa = 0;
 			else aa = v[i];
-			if (i >= b.v.size()) bb = 0;
+			if (i >= (int) b.v.size()) bb = 0;
 			else bb = b.v[i];
 			tmp = aa + bb + st;
 			if (tmp >= BASE) st = 1, tmp -= BASE;
