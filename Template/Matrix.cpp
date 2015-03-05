@@ -1,7 +1,4 @@
-const int N = ;
-const int MOD = ;
-
-struct Matrix{
+struct Matrix {
 	int a[N][N];
 
 	Matrix (bool ident = 0) {
@@ -22,13 +19,13 @@ struct Matrix{
 
 void add(int &x, int y) {
 	x += y;
-	if (x >= MOD) x -= MOD;
+	if (x >= MO) x -= MO;
 }
 
 Matrix operator * (const Matrix &a, const Matrix &b) {
 	Matrix c;
 	REP(i, N) REP(j, N) REP(k, N) {
-		add(c[i][j], 1ll * a[i][k] * b[k][j] % MOD);
+		add(c[i][j], 1LL * a[i][k] * b[k][j] % MO);
 	}
 	return c;
 }
