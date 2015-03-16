@@ -99,7 +99,7 @@ void erase(Node *&u, int s) {
 	}
 }
 
-Node *rt[N << 2];
+Node *rt[N << 1];
 int a[N];
 
 Node* New_Node(int x) {
