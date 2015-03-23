@@ -6,7 +6,7 @@ struct Node{
 		size = l->size + 1 + r->size;
 		return this;
 	}
-}bar[N], *foo, *rt[N], *null;
+}bar[N * 15], *foo, *rt[N << 2], *null;
 
 void init() {
 	foo = null = bar;
@@ -61,29 +61,28 @@ void show(Node *u) {
 	}
 }
 
-pair<int, bool> find(Node *u, int x) {
-	if (u == null) return {0, 0};
-	if (u->value == x) {
-		return {u->l->size + 1, 1};
+int find(Node *u, int x) {
+	if (u == null) return 0;
+	if (u->value <= x) {
+		return u->l->size + 1 + find(u->r, x);
 	}
-	else if (u->value < x) {
-		pair<int, bool> res = find(u->r, x);
-		res.first += u->l->size + 1;
-		return res;
-	}
-	else {
-		return find(u->l, x);
-	}
+	else return find(u->l, x);
+}
+
+Node* erase(Node *&u, int s) {
+	int tmp = find(u, s);
+	PNN res = split(u, tmp - 1);
+	PNN ans = split(res.second, 1);
+	u = merge(res.first, ans.second);
+	return ans.first;
 }
 
 void insert(Node *a, Node *&u) {
-	pair<int, bool> ans = find(u, a->value);
-	if (!ans.second) {
-		PNN res = split(u, ans.first);
-		u = a;
-		u = merge(res.first, u);
-		u = merge(u, res.second);
-	}
+	int ans = find(u, a->value);
+	PNN res = split(u, ans);
+	u = a;
+	u = merge(res.first, u);
+	u = merge(u, res.second);
 }
 
 void dfs(Node *a, Node *&b) {
@@ -103,3 +102,4 @@ Node* combine(Node *a, Node *b) {
 	dfs(a, b);
 	return b;
 }
+

@@ -1,7 +1,7 @@
 //获得字符串s的最小表示,会将字符串扩展成2倍长.
 //返回值是最小表示的起始位置在原串中的位置
 int minrepresent(char *s) {
-	int a = 0, b = 0, c = 0;
+	int a = 0, b = 1, c = 0;
 	int n = strlen(s);
 	REP(i, n) s[i + n] = s[i];
 	s[n << 1] = 0;
