@@ -112,7 +112,7 @@ void bfs() {
 int main() {
 	int n;
 	scanf("%d", &n);
-	step = int(log(n + 0.5) / log(2.0));
+	step = int(log(n + 0.5) / log(2.0)) + 1;
 	tot = 1;
 	REPP(i, 1, n) {
 		int p, cnt;
