@@ -38,7 +38,7 @@ namespace PT{
 			if (last->len == 1) {
 				last->suffix = even;
 			}
-			else last->suffix = get(p->suffix)->ch[x];
+			else last->suffix = get(p->suffix)->ch[x];//guarantee proper suffix
 			p->ch[x] = last;
 			cnt++;
 			return 1;
