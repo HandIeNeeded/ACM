@@ -7,17 +7,15 @@ namespace PT{
 	int n, cnt;//cnt = foo - bar = count of palindromes, n the number of char added
 
 	void init() {
-		odd = bar, even = odd + 1;
+		odd = bar, even = last = odd + 1, foo = even + 1;
 		MST(odd->ch, 0), MST(even->ch, 0);
-		odd->suffix = odd, even->suffix = odd;
+		odd->suffix = even->suffix = odd;
 		odd->len = -1, even->len = 0;
-		foo = even + 1, last = even;
 		n = 0, cnt = 0;
 	}
 
 	Node* New_Node(int x) {
-		MST(foo->ch, 0), foo->suffix = NULL;
-		foo->len = x;
+		MST(foo->ch, 0), foo->len = x;
 		return foo++;
 	}
 
