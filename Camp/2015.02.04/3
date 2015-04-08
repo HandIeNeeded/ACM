@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+
+#define REP(i, a) for(int i = 0; i < (int) (a); i ++)
+#define REPP(i, a, b) for(int i = (int) (a); i <= (int) (b); i ++)
+#define MST(a, b) memset(a, b, sizeof(a))
+
+#define L (x << 1)
+#define R (x << 1 | 1)
+#define MID ((l + r) >> 1)
+#define LC L, l, MID
+#define RC R, MID + 1, r
+
+using namespace std;
+
+const int N = 200005;
+
+int mx[N << 2];
+int ql, qr, qd, qx;
+
+void update(int x, int l, int r) {
+	if (l == r) {
+		mx[x] = qd;
+	}
+	else {
+		if (qx <= MID) update(LC);
+		else update(RC);
+	}
+}
+
+int query(int x, int l, int r) {
+	if (ql <= l && qr >= r) {
+		return mx[x];
+	}
+	else {
+		int ans = 2e9;
+		if (ql <= MID) ans = min(ans, query(LC));
+		if (qr > MID) ans = min(ans, query(RC));
+		return ans;
+	}
+}
+
+pair<int, int> p[N << 1];
+
+int main() {
+	ios :: sync_with_stdio(0);
+
+	
+
+
+	return 0;
+}
