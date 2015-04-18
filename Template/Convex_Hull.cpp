@@ -1,29 +1,35 @@
-vector<Point> Convex_Hull(vector<Point> vertex)
-{
+struct point{
+	int x, y, id;
+	point (int x = 0, int y = 0, int id = 0) :x(x), y(y), id(id) {}
+
+	point operator - (const point &a) const {
+		point res;
+		res.x = x - a.x, res.y = y - a.y;
+		return res;
+	}
+}p[N];
+
+long long det(const point &a, const point &b) {
+	return 1LL * a.x * b.y - 1LL * a.y * b.x;
+}
+
+bool cmp(const point &a, const point &b) {
+	return a.x < b.x || (a.x == b.x && a.y < b.y);
+}
+
+vector<point> Convex_Hull(vector<point> vertex) {
     sort(vertex.begin(), vertex.end(), cmp);
-
-    int n = vertex.size();
-    vector<Point> C;
-
-    int m;
-
-    REP(i, n)
-    {
-        while ((m = C.size()) > 1
-            && v_mul(C[m - 1] - C[m - 2], vertex[i] - C[m - 2]) < EPS)
-                C.pop_back();
-        C.PB(vertex[i]);
+    int n = vertex.size(), m;
+    vector<point> C;
+    for (int i = 0; i < n; i++) {
+        while ((m = C.size()) > 1 && det(C[m - 1] - C[m - 2], vertex[i] - C[m - 2]) < EPS) C.pop_back();
+        C.push_back(vertex[i]);
     }
-
     int k = C.size();
-    RED(i, n - 1)
-    {
-        while ((m = C.size()) > k
-            && v_mul(C[m - 1] - C[m - 2], vertex[i] - C[m - 2]) < EPS)
-                C.pop_back();
-        C.PB(vertex[i]);
+    for (int i = n - 2; i >= 0; i--) {
+        while ((m = C.size()) > k && det(C[m - 1] - C[m - 2], vertex[i] - C[m - 2]) < EPS) C.pop_back();
+        C.push_back(vertex[i]);
     }
-    C.pop_back();
-
+    if (n > 1) C.pop_back();
     return C;
 }
