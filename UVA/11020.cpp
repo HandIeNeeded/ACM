@@ -1,38 +1,59 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <cmath>
+#include <ctime>
+#include <cassert>
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <vector>
+#include <set>
+#include <map>
+#include <queue>
+#include <deque>
+#include <bitset>
+#include <algorithm>
 
-#define REP(i, a) for (int i = 0; i < (int) (a); i ++)
-#define REPP(i, a, b) for (int i = (int) (a); i <= (int) (b); i ++)
+#define MST(a, b) memset(a, b, sizeof(a))
+#define REP(i, a) for (int i = 0; i < int(a); i++)
+#define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
 
 using namespace std;
 
-const int N = 100005;
+const int N = 1e5 + 5;
 
-multiset<pair<int, int> > s;
-pair<int, int> p[N];
+struct point{
+	int x, y;
+
+	bool operator < (const point &rhs) const {
+		return x < rhs.x || (x == rhs.x && y < rhs.y);
+	}
+};
+
+multiset<point> candidate;
 
 int main() {
-	ios :: sync_with_stdio(0);
-	int t, ca = 1;
-
-	cin >> t;
+	int t, ca = 1, first = 0;
+	scanf("%d", &t);
 	while (t--) {
 		int n;
-		cin >> n;
-		REP(i, n) {
-			cin >> p[i].first >> p[i].second;
-		}
-		s.clear();
-		if (ca > 1) cout << endl;
-		cout << "Case #" << ca++ << ":" << endl;
-		REP(i, n) {
-			auto pos = s.lower_bound(p[i]);
-			if (pos == s.begin() || (--pos) -> second > p[i].second) 
-				s.insert(p[i]);
-			pos = s.upper_bound(p[i]);
-			while (pos != s.end() && pos -> second > p[i].second) {
-				s.erase(pos++);
+		scanf("%d", &n);
+		candidate.clear();
+		if (first++) puts("");
+		printf("Case #%d:\n", ca++);
+		REPP(i, 1, n) {
+			int x, y;
+			scanf("%d%d", &x, &y);
+			point tmp = {x, y};
+			auto it = candidate.lower_bound(tmp);
+			if (it == candidate.begin() || (--it)->y >= tmp.y) {
+				candidate.insert(tmp);
+				it = candidate.upper_bound(tmp);
+				while (it != candidate.end() && it->y >= tmp.y) candidate.erase(it++);
 			}
-			cout << s.size() << endl;
+			printf("%d\n", int(candidate.size()));
 		}
 	}
 
