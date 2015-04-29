@@ -83,12 +83,11 @@ int main() {
 			cnt += tot - 1;
 		}
 		if (m - cnt < k) {
-			vector<int> tmp;
-			int kk = k - (m - cnt);
+			int kk = k - (m - cnt), tot = 0;
 			REPP(i, 1, n) if (!use[i]) {
-				tmp.push_back(val[i]);
+				tmp[tot++] = val[i];
 			}
-			sort(tmp.begin(), tmp.end());
+			sort(tmp, tmp + tot);
 			REP(i, kk) {
 				ans += tmp[i];
 			}
