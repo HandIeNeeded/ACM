@@ -1,4 +1,4 @@
-int get() {
+int in() {
 	char c;
 	while (c = getchar(), (c < '0' || c > '9') && (c != '-'));
 	bool flag = (c == '-');
@@ -11,7 +11,7 @@ int get() {
 	return flag ? -x : x;
 }
 
-void output(int x) { //int
+void out(int x) { //int
 	if (x < 0) putchar('-'), x = -x;
 	int len = 0, bit[10]; // LL  -> bit[20]
 	while (x) {
