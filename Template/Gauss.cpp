@@ -4,7 +4,7 @@ struct Matrix{
 };
 
 void gauss(Matrix& a, int n){
-	int i, j ,k, r;
+	int i, j, k, r;
 	for (i = 0; i < n; ++i){
 		r = i;
 		for (j = i + 1; j < n; ++j)
