@@ -1,0 +1,8 @@
+@book
+{
+	author = "Donald Ervin Knuth",
+	title = "The Art of CS Programming",
+	volume = "1",
+	publisher = "Addison-Wesley Professional",
+	year = "1997"
+}
