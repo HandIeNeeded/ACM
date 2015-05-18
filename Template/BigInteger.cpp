@@ -1,10 +1,8 @@
 #define LL long long
-
 const LL BASE = 1e9;
 
 struct BigInteger {
 	vector<LL> v; //v中倒序存放数字
-	
 	BigInteger () {}
 	BigInteger (LL x) { Init(x); }
 	
