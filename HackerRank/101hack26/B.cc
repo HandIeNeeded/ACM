@@ -1,0 +1,51 @@
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <cmath>
+#include <ctime>
+#include <cassert>
+#include <climits>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <string>
+#include <vector>
+#include <set>
+#include <map>
+#include <queue>
+#include <deque>
+#include <bitset>
+#include <algorithm>
+
+#define LL long long
+#define REP(i, a) REPP(i, 0, (a) - 1)
+#define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
+#define MST(a, b) memset(a, b, sizeof(a))
+
+using namespace std;
+
+int main() {
+    ios :: sync_with_stdio(0);
+	int t;
+	cin >> t;
+	while (t--) {
+		int r, s, tmp;
+		cin >> r >> s;
+		tmp = r;
+		r %= s;
+		if (4 * r > s) {
+			cout << tmp + s - r << ' ';
+			cout << "0/1" << endl;
+		}
+		else {
+			int d = __gcd(r, s);
+			cout << tmp << ' ';
+			cout << r / d << "/" << s / d << endl;
+		}
+	}
+
+    return 0;
+}
+
+
