@@ -1,27 +1,20 @@
-//倍增 O(nlogn)
-//对于一个或多个（需要连接几个字符串的时候）在每个字符串后加一个未出现过的标记字符，且要保证两两不同，比如'#'(35), '@'('A'-1), '['('Z'+1), '`'('a'-1), '{'('z'+1)
-//转化成数字做最简单啦。
-//'A'(65) 'a'(97)
-
-const int N = 100005;
-
 struct Suffix_Array {
-	int s[N];
-	int sa[N], t1[N], t2[N], c[N], n; // n 字符串长度 sa 后缀数组
-	//sa[i] 排名是i的后缀的序号（从0开始标号，第零个是我们添加的字符的后缀，这是对于只有一个字符串说的，显然是n，sa[0] = n）
+	int s[N], sa[N], a[N], b[N], c[N], n;
+	int r[N], hg[N]; 
+	//sa[i] 0base sa[0] = n 后缀数组排名i的后缀是第几个后缀
+	//rank[i] 0base 第i个后缀在后缀数组里面的排名
+	//height[i] sa[i]和sa[i-1]的最长公共前缀, hg[0] = 0, hg[1] = 0;
 	
-	void Init(int x) { //x = SL(s) + 1 or etc;
+	void init(int x) {
 		n = x;
-		//s[n]要比所有出现的字符（or数字）小，但是大于0，比如'#'，或者数字的时候1
-		getsa(256);
-		gethg();
-		//所有初始化数组已经写在函数里面，没有必要另外memset了。
+		getsa(256), gethg();
 	}
 
-	void getsa(int m) { // m 字符集大小
-		int *x = t1, *y = t2;
+	//m字符集大小
+	void getsa(int m) {
+		int *x = a, *y = b;
 		MST(c, 0);
-		REP(i, n) c[x[i] = s[i]]++; //这里反正都是转化成 int 做
+		REP(i, n) c[x[i] = s[i]]++;
 		REPP(i, 1, m - 1) c[i] += c[i - 1];
 		for (int i = n - 1; i >= 0; --i) sa[--c[x[i]]] = i;
 		for(int k = 1; k <= n; k <<= 1) {
@@ -42,11 +35,6 @@ struct Suffix_Array {
 		}
 	}
 
-	int r[N], hg[N]; // rank[], height[]
-	
-	//rank[i] 第i个后缀在后缀数组里面的排名，（反函数的关系）
-	//height[i] sa[i]和sa[i-1]的最长公共前缀，hg[0] = 0, hg[1] = 0;
-
 	void gethg(){
 		REP(i, n) r[sa[i]] = i;
 		int k = 0;
@@ -59,19 +47,16 @@ struct Suffix_Array {
 	}
 
 	void output(){
-		REP(i, n) cout << sa[i] << ' ';//n比原长大一
-		cout << endl;
-		REP(i, n) cout << hg[i] << ' ';
-		cout << endl;
+		REP(i, n) cout << sa[i] << " \n"[i == n - 1];
+		REP(i, n) cout << hg[i] << " \n"[i == n - 1];
 	}
 }SA;
 
 // DC3
-
 #define F(x) ((x)/3+((x)%3==1?0:tb))
 #define G(x) ((x)<tb?(x)*3+1:((x)-tb)*3+2)
 
-int wa[N],wb[N],wv[N],wss[N]; //看不懂 反正开这么大就够了
+int wa[N],wb[N],wv[N],wss[N];
 
 int c0(int *r,int a,int b) {return r[a]==r[b]&&r[a+1]==r[b+1]&&r[a+2]==r[b+2];}
 
@@ -87,10 +72,9 @@ void sort(int *r,int *a,int *b,int n,int m){
 	for(i=0;i<n;i++) wss[wv[i]]++;
 	for(i=1;i<m;i++) wss[i]+=wss[i-1];
 	for(i=n-1;i>=0;i--) b[--wss[wv[i]]]=a[i];
-	return;
 }
 
-int r[3 * N], sa[3 * N]; // 三倍大小
+int r[3 * N], sa[3 * N];
 
 void dc3(int *r,int *sa,int n,int m){ //长度，字符集大小
 	int i,j,*rn=r+n,*san=sa+n,ta=0,tb=(n+1)/3,tbc=0,p;
@@ -114,7 +98,7 @@ void dc3(int *r,int *sa,int n,int m){ //长度，字符集大小
 	return;
 }
 
-int hg[N]; // height[]
+int hg[N];
 
 void gethg(){
 	REP(i, n) r[sa[i]] = i;
@@ -126,5 +110,3 @@ void gethg(){
 		hg[r[i]] = k;
 	}
 }
-
-
