@@ -38,7 +38,7 @@ struct Exp{
                 }
                 top--;
             }
-            else if (s[i] == '-' && (i == 0 || s[i - 1] == '(')) {
+            else if (s[i] == '-' && (i == 0 || s[i - 1] == '(')) { //处理负号
                 num[++tot] = 0;
                 op[++top] = '-';
             }
