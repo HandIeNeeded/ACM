@@ -34,7 +34,7 @@ struct MaxFlow{
 				q.push(y);
 			}
 		}
-		return vis[sink];
+		return lvl[sink];
 	}
 
 	int dfs(int x, int flow) {
