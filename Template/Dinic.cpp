@@ -1,6 +1,6 @@
 template<int N, int M, typename Type>
 struct MaxFlow{
-	int node, edge, tot, source, sink;
+	int edge, tot, source, sink;
 	int lvl[N], cur[N];
 	int fi[N], ne[M << 1], en[M << 1];
 	Type cap[M << 1];
@@ -12,11 +12,11 @@ struct MaxFlow{
 		REPP(i, 0, tot) fi[i] = 0;
 	}
 
-	void _add(int x, int y, int z) {
+	void _add(int x, int y, Type z) {
 		ne[++edge] = fi[x]; fi[x] = edge; en[edge] = y; cap[edge] = z;
 	}
 
-	void add(int x, int y, int z) {
+	void add(int x, int y, Type z) {
 		_add(x, y, z);
 		_add(y, x, 0);
 	}
@@ -43,11 +43,9 @@ struct MaxFlow{
 		Type ans = 0, tmp = 0;
 		for (int &go = cur[x]; go; go = ne[go]) if (cap[go] > 0) {
 			int y = en[go];
-			if (lvl[y] == lvl[x] + 1 && (tmp = dfs(y, min(flow, cap[go]))) > 0) {
-				ans += tmp;
-				cap[go] -= tmp;
-				cap[go ^ 1] += tmp;
-				flow -= tmp;
+			if (lvl[y] == lvl[x] + 1 && (tmp = dfs(y, min(flow, (Type) cap[go]))) > 0) {
+				ans += tmp, flow -= tmp;
+				cap[go] -= tmp, cap[go ^ 1] += tmp;
 				if (flow == 0) {
 					return ans;
 				}
@@ -65,3 +63,4 @@ struct MaxFlow{
 		return ans;
 	}
 };
+MaxFlow<100005, 100005, int> flow;
