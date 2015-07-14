@@ -1,5 +1,3 @@
-const int N = 100005;
-
 struct SGT{
 	int l, r, cnt;
 	SGT(int a = 0, int b = 0, int c = 0) : l(a), r(b), cnt(c) {}
