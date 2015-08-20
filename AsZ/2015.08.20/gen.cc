@@ -14,17 +14,28 @@ int main() {
 	ios :: sync_with_stdio(0);
     //freopen("tmp.in", "w", stdout);
 	srand(time(0) % clock());
-    REP(i, 3) {
-        int n = rand() % 4 + 3, m = rand() % 4 + 3;
+    int t = 4;
+    cout << t << endl;
+    int l, r;
+    REP(i, t) {
+        int n = rand() % 100 + 1, m = rand() % 100 + 1;
         cout << n << ' ' << m << endl;
-        REP(i, n) {
-            cout << rand() % 100 + 1 << ' ';
+        REPP(i, 1, n) tmp[i] = 100 - rand() % 200;
+        REPP(i, 1, n) {
+            cout << tmp[i] << ' ';
         }
         cout << endl;
-        REP(i, m) {
-            cout << rand() % 100 + 1 << ' ';
+        while (m--) {
+            int type = rand() & 1;
+            if (type) {
+                l = rand() % n + 1, r = 100 - rand() % 200;
+            }
+            else {
+                l = rand() % n + 1, r = rand() % n + 1;
+                if (l > r) swap(l, r);
+            }
+            cout << type << ' ' << l << ' ' << r << endl;
         }
-        cout << endl;
     }
 	return 0;
 }

@@ -5,85 +5,118 @@
 #define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
 #define MST(a, b) memset(a, b, sizeof(a))
 
+#define L (x << 1)
+#define R (x << 1 | 1)
+#define MID ((l + r) >> 1)
+#define LC L, l, MID
+#define RC R, MID + 1, r
+
 using namespace std;
 
 const int N = 1e5 + 5;
-int cnt[2];
-int a[2][N], dp[2][N][17];
-map<int, int> f[2];
-vector<pair<int, int> > g[2];
+int qx, qd, ql, qr;
+int num[N];
 
-int query(int type, int L, int R) {
-    int bit = 0;
-    while ((1 << (bit + 1)) < (R - L + 1)) bit++;
-    return __gcd(dp[type][L][bit], dp[type][R - (1 << bit) + 1][bit]);
+struct Unit{
+    int l, r, la, ra; //range length
+    LL lsum, lmax; //prefix max
+    LL rsum, rmax; //suffix max
+    LL ans;
+
+    void print() {
+        cout << la << ' ' << lsum << ' ' << lmax << endl;
+        cout << ra << ' ' << rsum << ' ' << rmax << endl;
+        cout << ans << endl;
+    }
+}p[N << 2];
+
+Unit operator + (const Unit &a, const Unit &b) {
+    Unit ans;
+    ans.l = a.l, ans.r = b.r;
+    if (a.la == b.l - a.l && ((num[a.r] - num[b.l]) & 1)) {
+        ans.la = a.la + b.la;
+        ans.lsum = a.lsum + b.lsum;
+        ans.lmax = max(a.lmax, a.lsum + b.lmax);
+    }
+    else {
+        ans.la = a.la;
+        ans.lsum = a.lsum;
+        ans.lmax = a.lmax;
+    }
+
+    if (b.ra == b.r - a.r && ((num[a.r] - num[b.l]) & 1)) {
+        ans.ra = a.ra + b.ra;
+        ans.rsum = a.rsum + b.rsum;
+        ans.rmax = max(b.rmax, b.rsum + a.rmax);
+    }
+    else {
+        ans.ra = b.ra;
+        ans.rsum = b.rsum;
+        ans.rmax = b.rmax;
+    }
+    return ans;
 }
 
-void init(int id) {
-    int n = cnt[id];
-    REP(i, n) dp[id][i][0] = a[id][i];
-    REPP(j, 1, 16) {
-        REP(i, n) {
-            if (i + (1 << j) > n) break;
-            dp[id][i][j] = __gcd(dp[id][i][j - 1], dp[id][i + (1 << (j - 1))][j - 1]);
-        }
+void build(int x, int l, int r) {
+    if (l == r) {
+        p[x] = (Unit) {l, r, 1, 1, num[l], num[l], num[r], num[r], num[l]};
     }
-    REP(i, n) {
-        int L = i, R = i, now = a[id][i];
-        while (R < n) {
-            int lo = R, hi = n;
-            while (lo + 1 < hi) {
-                int mid = (lo + hi) >> 1;
-                if (query(id, L, mid) == now) {
-                    lo = mid;
-                }
-                else hi = mid;
-            }
-            g[id].push_back(make_pair(now, hi - L));
-            f[id][now] = max(f[id][now], hi - L);
-            now = __gcd(now, a[id][hi]);
-            R = hi;
-        }
+    else {
+        build(LC), build(RC);
+        p[x] = p[L] + p[R];
+    }
+}
+
+Unit query(int x, int l, int r) {
+    if (ql <= l && qr >= r) {
+        return p[x];
+    }
+    else {
+        if (ql > MID) return query(RC);
+        if (qr <= MID) return query(LC);
+        return query(LC) + query(RC);
+    }
+}
+
+void update(int x, int l, int r) {
+    if (l == r) {
+        p[x] = (Unit) {l, r, 1, 1, qd, qd, qd, qd, qd};
+    }
+    else {
+        if (qx <= MID) update(LC);
+        if (qx > MID) update(RC);
+        p[x] = p[L] + p[R];
     }
 }
 
 int main() {
-    freopen("tmp.in", "r", stdin);
-    while (scanf("%d%d", &cnt[0], &cnt[1]) > 0) {
-        REP(i, 2) {
-            f[i].clear(), g[i].clear();
-            a[i][cnt[i]] = 0;
-            REP(j, cnt[i]) {
-                scanf("%d", &a[i][j]);
+#ifdef HOME
+    freopen("A.in", "r", stdin);
+#endif
+
+#ifdef ONLINE_JUDGE
+#define lld I64d
+#endif
+
+    int t;
+    scanf("%d", &t);
+    while (t--) {
+        int n, m;
+        scanf("%d%d", &n, &m);
+        REPP(i, 1, n) scanf("%d", num + i);
+        build(1, 1, n);
+        while (m--) {
+            int type;
+            scanf("%d%d%d", &type, &ql, &qr);
+            if (type) {
+                qx = ql, qd = qr;
+                update(1, 1, n);
+                num[qx] = qd;
             }
-            init(i);
-        }
-        int ans = 0;
-        LL num = 0;
-        for (auto &p: f[0]) {
-            int x, y;
-            tie(x, y) = p;
-            if (!f[1].count(x)) continue;
-            if (min(f[0][x], f[1][x]) > ans) {
-                cout << x << "hehe" << endl;
-                ans = min(f[0][x], f[1][x]);
+            else {
+                printf("%lld\n", query(1, 1, n).ans);
             }
         }
-        REP(i, 2) {
-            f[i].clear();
-            REP(j, cnt[i]) {
-                if (j + ans > cnt[i]) continue;
-                f[i][query(i, j, j + ans - 1)]++;
-            }
-        }
-        for (auto &p: f[0]) {
-            int x, y;
-            tie(x, y) = p;
-            if (!f[1].count(x)) continue;
-            cout << x << ' ' << f[0][x] << ' ' << f[1][x] << endl;
-            num += 1LL * f[0][x] * f[1][x];
-        }
-        printf("%d %lld\n", ans, num);
     }
 
     return 0;
