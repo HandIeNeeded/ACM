@@ -93,7 +93,7 @@ void ask(int l, int r, int &rlab, int &rf)
         }
 	}
     ++f;
-	if (f > rf || (f == rf && lab == rlab))
+	if (f > rf || (f == rf && lab < rlab))
 	{
 		rf = f, rlab = lab;
 	}
@@ -104,8 +104,6 @@ void solve(int l, int r)
     if (l >= r) return ;
     int mid = (l + r) >> 1;
     solve(mid + 1, r);
-
-
 	++now;
 	for (int i = l; i <= r; ++i)
 		bh[i] = i;
@@ -128,7 +126,7 @@ void solve(int l, int r)
 
 int main()
 {
-	freopen("I.in", "r", stdin);
+	//freopen("I.in", "r", stdin);
 	now = 0;
 	for (int n; scanf("%d", &n) != EOF; )
 	{
