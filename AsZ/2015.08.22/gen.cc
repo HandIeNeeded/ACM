@@ -15,11 +15,10 @@ int main() {
 	ios :: sync_with_stdio(0);
     //freopen("tmp.in", "w", stdout);
 	srand(time(0) % clock());
-    int t = 30000;
+    int t = 1000;
     cout << t << endl;
-    int l, r;
     REP(i, t) {
-        LL n = rand() % 10, r = rand() % 62 + 1;
+        LL n = 1LL * rand() * rand(), r = rand() % 62 + 1;
         cout << n << ' ' << r << endl;
     }
 	return 0;
