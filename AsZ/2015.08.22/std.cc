@@ -1,64 +1,63 @@
-#include <bits/stdc++.h>
-
-#define LL long long
-#define REP(i, a) REPP(i, 0, (a) - 1)
-#define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
-#define MST(a, b) memset(a, b, sizeof(a))
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <cmath>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
+typedef long long ll;
+const int fac[30] = {-2, -3, -5, -7, -11, -13, -17, -19, -23, -29, -31, -37, -41, -43, -47, -53, -59, -61, -67};
 
-const int N = 1e5 + 5;
+ll N;
+int R;
+vector<int> S;
 
-int num[N];
+void init () {
+	S.clear();
+	scanf("%lld%d", &N, &R);
 
-int good(int l, int r) {
-    for (int i = l + 1; i <= r; i++) {
-        if (((num[i] - num[i - 1]) & 1) == 0) {
-            return 0;
-        }
-    }
-    return 1;
+	for (int i = 0; abs(fac[i]) <= R; i++) {
+		int tmp = S.size();
+		for (int j = 0; j < tmp; j++) {
+			if (abs(fac[i] * S[j]) <= 63)
+				S.push_back(fac[i] * S[j]);
+		}
+		S.push_back(fac[i]);
+	}
 }
 
-LL sum(int l, int r) {
-    LL ans = 0;
-    REPP(i, l, r) {
-        ans += num[i];
-    }
-    return ans;
+ll get(ll n) {
+	if (n == 1)
+		return 0;
+	ll ret = n;
+	for (int i = 0; i < S.size(); i++) {
+		ll tmp = (ll)(pow(n + 0.5, 1.0 / abs(S[i]))) - 1;
+		if (S[i] < 0)
+			ret -= tmp;
+		else
+			ret += tmp;
+	}
+	return ret - 1;
 }
 
-int main() {
-#ifdef HOME
-    freopen("A.in", "r", stdin);
-#endif
-    int t;
-    scanf("%d", &t);
-    int n, m;
-    while (t--) {
-        scanf("%d%d", &n, &m);
-        REPP(i, 1, n) scanf("%d", num + i);
-        while (m--) {
-            int type, l, r;
-            LL ans = -(1LL << 60);
-            scanf("%d%d%d", &type, &l, &r);
-            if (type) {
-                num[l] = r; 
-            }
-            else {
-                for (int i = l; i <= r; i++) {
-                    for (int j = i; j <= r; j++) {
-                        if (good(i, j)) {
-                            ans = max(ans, sum(i, j));
-                        }
-                    }
-                }
-            }
-            printf("%lld\n", ans);
-        }
-    }
-
-
-    return 0;
+void solve () {
+	ll ret = N;
+	while (true) {
+		ll tmp = get(ret);
+		if (tmp == N)
+			break;
+		ret += N - tmp;
+	}
+	printf("%lld\n", ret);
 }
 
+int main () {
+	int cas;
+	scanf("%d", &cas);
+	for (int i = 1; i <= cas; i++) {
+		init();
+		solve();
+	}
+	return 0;
+}
