@@ -19,39 +19,46 @@ const double eps = 1e-9;
 
 using namespace std;
 
-const int N = 4005;
-const int MO = 1e9 + 7;
-int c[N][N], dp[N] = {1, 1}, fac[N] = {1, 1}, f[N] = {1};
+const int N = 1e5 + 5;
+vector<int> edge[N];
+int a[N], n;
+int vis[N], dp[N];
 
-void add(int &x, int y) {
-	x += y;
-	if (x >= MO) x -= MO;
-}
-
-void init() {
-    REPP(i, 2, N - 1) fac[i] = 1LL * i * fac[i - 1] % MO;
-    REPP(i, 0, N - 1) {
-        c[i][0] = c[i][i] = 1;
-        REPP(j, 1, i - 1) {
-            c[i][j] = c[i - 1][j];
-            add(c[i][j], c[i - 1][j - 1]);
+int dijkstra() {
+    REPP(i, 1, n) dp[i] = a[i];
+    priority_queue<PII, vector<PII>, greater<PII> > q;
+    REPP(i, 0, n + 1) {
+        q.push({dp[i], i});
+    }
+    int ans = 0;
+    while (q.size()) {
+        int x = q.top().second; q.pop();
+        if (vis[x]) continue;
+        vis[x] = 1;
+        ans = max(ans, dp[x]);
+        REP(i, edge[x].size()) {
+            int y = edge[x][i];
+            if (dp[y] > dp[x] + 1) {
+                dp[y] = dp[x] + 1;
+                q.push({dp[y], y});
+            }
         }
     }
+    return ans;
 }
 
 int main() {
 	ios :: sync_with_stdio(0);
-    init();
-    int n;
     cin >> n;
-    REPP(i, 2, n) {
-        REPP(j, 1, i) {
-            add(dp[i], 1LL * c[i - 1][j - 1] * dp[i - j] % MO);
-        }
-    }
+    REPP(i, 1, n) cin >> a[i];
     REPP(i, 1, n) {
-        add(f[n], 1LL * c[n][i] * dp[n - i] % MO);
+        edge[i].push_back(i + 1);
+        edge[i].push_back(i - 1);
     }
-    cout << f[n] << endl;
+    edge[0].push_back(1);
+    edge[n + 1].push_back(n);
+    cout << dijkstra() << endl;
+
+
 	return 0;
 }

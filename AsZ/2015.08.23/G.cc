@@ -204,10 +204,8 @@ int main() {
             }
             else {
                 ql = b[i], qr = c[i];
-                //cout << ql << ' ' << qr << ' ' << d[i] << endl;
                 printf("%d\n", query(1, 1, tot, d[i]));
             }
-            //show(rt[1]);
         }
     }
 

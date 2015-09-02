@@ -24,8 +24,11 @@ struct MCMF{
 
     void init() {
         source = 0, sink = 2 * n + m + 1, cnt = 1;
-        REPP(i, 1, n) add(i, i + n, 1, 0), add(i + n, sink, 1, 0);
         REPP(i, source, sink) head[i] = vis[i] = 0;
+        REPP(i, 1, n) {
+            add(i, i + n, 1, 0);
+            add(i + n, sink, 1, 0);
+        }
     }
 
     void _add(int x, int y, int z, int w) {
@@ -39,7 +42,7 @@ struct MCMF{
     }
 
     bool dijkstra() {
-        REPP(i, source, sink) dp[i] = INF;
+        REPP(i, source, sink) dp[i] = INF, vis[i] = 0;
         priority_queue<PII, vector<PII>, greater<PII> > q;
         q.push({0, source}), dp[source] = pre[source] = 0;
 
@@ -60,7 +63,7 @@ struct MCMF{
     }
 
     pair<int, int> minCost() {
-        int ans = 0, flow = 0;
+        int cost = 0, flow = 0;
         while (dijkstra()) {
             int tmp = INF;
             for (int go = pre[sink]; go; go = pre[edge[go ^ 1].tail]) {
@@ -70,10 +73,10 @@ struct MCMF{
                 edge[go].cap -= tmp;
                 edge[go ^ 1].cap += tmp;
             }
-            ans += tmp * dp[sink];
+            cost += tmp * dp[sink];
             flow += tmp;
         }
-        return {ans, flow};
+        return {cost, flow};
     }
 }flow;
 
@@ -95,12 +98,12 @@ int main() {
     int t;
     scanf("%d", &t);
     while (t--) {
-        now++;
         scanf("%d%d%d", &n, &m, &k);
         REPP(i, 1, n) REPP(j, 1, n) mp[i][j] = 0;
         flow.init();
         int id = 2 * n;
         while (m--) {
+            now++;
             int type, x, y;
             scanf("%d", &type);
             if (type == 1) {
@@ -110,7 +113,6 @@ int main() {
                 flow.add(flow.source, id, k, 0);
                 mark[id] = flow.cnt;
                 REPP(i, 1, n) if (vis[i] == now) {
-                    cout << id << ' ' << i << endl;
                     flow.add(id, i, k, m);
                 }
             }
@@ -129,7 +131,7 @@ int main() {
         }
         pair<int, int> ans = flow.minCost();
         printf("%d\n", ans.second);
-        REPP(i, n + 1, id) {
+        REPP(i, 2 * n + 1, id) {
             printf("%d%c", flow.edge[mark[i]].cap, " \n"[i == id]);
         }
     }

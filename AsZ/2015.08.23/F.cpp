@@ -33,7 +33,7 @@ struct Mat
 
 int main()
 {
-    freopen("F.in", "r", stdin);
+    //freopen("F.in", "r", stdin);
     int ttt;
     scanf("%d", &ttt);
     for (int tt = 1; tt <= ttt; tt++)
@@ -65,13 +65,6 @@ int main()
             if (m & 1)
                 ans = ans * t;
             t = t * t;
-//        for (int i = 0; i <= n; i++)
-//            for (int j = 0; j <= n; j++)
-//                printf("%d%c", ans[i][j], " \n"[j == n]);
-//            printf("\n");
-//        for (int i = 0; i <= n; i++)
-//            for (int j = 0; j <= n; j++)
-//                printf("%d%c", t[i][j], " \n"[j == n]);
             m >>= 1;
         }
         int res = 0;
