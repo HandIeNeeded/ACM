@@ -56,7 +56,7 @@ int main()
     char *p = (char*)malloc(size) + size;
     __asm__("movl %0, %%esp\n" :: "r"(p));
 
-	freopen("J.in", "r", stdin);
+	//freopen("J.in", "r", stdin);
 	int n;
 	ca = 1;
 	while (scanf("%d", &n) != EOF)

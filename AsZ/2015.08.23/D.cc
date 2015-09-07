@@ -7,111 +7,87 @@
 
 using namespace std;
 
-struct Node{
-    Node *l, *r;
-    int value, size;
+const int N = 1e5 + 5;
 
-    Node* update() {
-        size = 1 + l->size + r->size;
-        return this;
+struct Edge{
+    int next, tail, id;
+}edge[N << 1];
+
+int head[N], tot;
+int low[N], vis[N], bridge[N << 1], now;
+int L[N], R[N], mx[N], path[N], prefix[N], suffix[N], stamp;
+int n, m;
+
+void add(int x, int y, int z) {
+    edge[++tot].next = head[x], head[x] = tot;
+    edge[tot].tail = y, edge[tot].id = z;
+}
+
+void dfsTree(int x, int p) {
+    L[x] = ++stamp, path[stamp] = x;
+    mx[x] = x, vis[x] = now, low[x] = stamp;
+    for (int go = head[x]; go; go = edge[go].next) {
+        int y = edge[go].tail;
+        if (y != p) {
+            if (vis[y] != now) {
+                dfsTree(y, x);
+                low[x] = min(low[x], low[y]);
+                mx[x] = max(mx[x], mx[y]);
+                if (low[y] > L[x]) bridge[go] = bridge[go ^ 1] = now;
+            }
+            else {
+                low[x] = min(low[x], L[y]);
+            }
+        }
     }
-}bar[N * 40], *rt[N << 3], *null, *foo;
-
-int n, m, tot;
-vector<int> num;
-int a[N], b[N], c[N], d[N], type[N];
+    R[x] = stamp;
+}
 
 void init() {
-    null = foo = bar;
-    null->l = null->r = null;
-    foo++;
-    REPP(i, 1, tot * 4) rt[i] = null;
-}
-
-bool gen(int a, int b) {
-    return rand() % (a + b) < a;
-}
-
-Node* New_Node(int x) {
-    return new (foo++) (Node) {null, null, x, 1};
-}
-
-Node* merge(Node *a, Node *b) {
-    if (a == null) return b;
-    if (b == null) return a;
-    if (gen(a->size, b->size)) {
-        a->r = merge(a->r, b);
-        return a->update();
-    }
-    else {
-        b->l = merge(a, b->l);
-        return b->update();
-    }
-}
-
-#define PNN pair<Node*, Node*> 
-
-PNN split(Node *u, int s) {
-    if (u == null) return {null, null};
-    if (u->l->size >= s) {
-        PNN res = split(u->l, s);
-        u->l = res.second;
-        return make_pair(res.first, u->update());
-    }
-    else {
-        PNN res = split(u->r, s - u->l->size - 1);
-        u->r = res.first;
-        return make_pair(u->update(), res.second);
-    }
-}
-
-int find(Node *u, int num) {
-    //cout << u->value << ' ' << num << endl;
-    if (u == null) return 0;
-    if (u->value > num) {
-        return find(u->l, num);
-    }
-    else {
-        return u->l->size + 1 + find(u->r, num);
-    }
-}
-
-int in() {
-	char c;
-	while (c = getchar(), (c < '0' || c > '9') && (c != '-'));
-	bool flag = (c == '-');
-	if (flag) c = getchar();
-	int x = 0;
-	while (c >= '0' && c <= '9') {
-		x = x * 10 + c - 48;
-		c = getchar();
-	}
-	return flag ? -x : x;
-}
-
-void out(int x) { //int
-	if (x < 0) putchar('-'), x = -x;
-	int len = 0, bit[10]; // LL  -> bit[20]
-	while (x) {
-		bit[len++] = x % 10;
-		x /= 10;
-	}
-	if (!len) bit[len++] = 0;
-	while (len--) putchar(bit[len] + 48);
-	putchar('\n');
-}
-
-int dfs(int x, int p) {
-
+    prefix[0] = suffix[n + 1] = 0;
+    REPP(i, 1, n) prefix[i] = max(prefix[i - 1], path[i]);
+    for (int i = n; i >= 1; i--) suffix[i] = max(suffix[i + 1], path[i]);
 }
 
 int main() {
 #ifdef HOME
-    freopen("in", "r", stdin);
+    freopen("D.in", "r", stdin);
 #endif
     int t;
-
+    scanf("%d", &t);
+    while (t--) {
+        scanf("%d%d", &n, &m);
+        now++;
+        tot = 1, stamp = 0;
+        REPP(i, 1, n) head[i] = 0;
+        REPP(i, 1, m) {
+            int x, y;
+            scanf("%d%d", &x, &y);
+            add(x, y, i), add(y, x, i);
+        }
+        dfsTree(1, 0);
+        init();
+        for (int i = 2; i <= 2 * m; i += 2) {
+            if (bridge[i] == now) {
+                int a = edge[i].tail, b = edge[i ^ 1].tail;
+                if (L[a] > L[b]) {
+                    swap(a, b);
+                }
+                int ans = 0;
+                if (mx[b] == n) {
+                    ans = max(ans, prefix[L[b] - 1]);
+                    ans = max(ans, suffix[R[b] + 1]);
+                }
+                else {
+                    ans = mx[b];
+                }
+                printf("%d %d\n", ans, ans + 1);
+            }
+            else {
+                puts("0 0");
+            }
+        }
+    }
 
     return 0;
 }
-

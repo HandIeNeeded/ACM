@@ -93,6 +93,7 @@ void dfs(int x) {
 int main() {
 #ifdef HOME
     freopen("J.in", "r", stdin);
+    clock_t st = clock(), ed;
 #endif
 
     int t;
@@ -135,5 +136,9 @@ int main() {
             printf("%d%c", flow.edge[mark[i]].cap, " \n"[i == id]);
         }
     }
+#ifdef HOME
+    ed = clock();
+    cout << 1.0 * (ed - st) / CLOCKS_PER_SEC << endl;
+#endif
     return 0;
 }
