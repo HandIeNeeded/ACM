@@ -1,6 +1,7 @@
-#include <iostream>
 #include <set>
 #include <cstdio>
+#include <cstring>
+#include <iostream>
 
 #define LL long long
 #define REP(i, a) REPP(i, 0, (a) - 1)
@@ -10,66 +11,55 @@
 using namespace std;
 
 const int N = 1e5 + 5;
-
-int x, y, n, h1, h2;
 int a[N];
 
 int main() {
 #ifdef HOME
-    //freopen("in", "r", stdin);
+    freopen("in", "r", stdin);
 #endif
-    cin >> n >> x >> y >> h1 >> h2;
-    //cout << n << ' ' << x << ' ' << y << ' ' << h1 << ' ' << h2 << endl;
-    REPP(i, 1, n) {
-        cin >> a[i];
-    }
-    set<int> s;
-    int win = 0, round = 0, damage = 0;
-    int ans = 0;
-    REPP(i, 1, n) {
-        round++;
-        damage += x;
-        ans = max(ans, damage);
-        h2 -= x;
-        if (h2 <= 0) {
-            win = 1;
-            break;
-        }
-        h1 -= a[i];
-        if (h1 <= 0) {
-            while (h1 <= 0) {
-                set<int> :: iterator it = s.end();
-                if (it == s.begin()) break;
-                it--;
-                int tmp = *it;
-                if (tmp >= y) {
-                    damage -= x;
+    int n, x, y, h1, h2;
+    while (scanf("%d%d%d%d%d", &n, &x, &y, &h1, &h2) > 0) {
+        int mx = 0, atk = 0, win = 0, round = 0;
+        multiset<int> s;
+        REPP(i, 1, n) scanf("%d", a + i);
+        REPP(i, 1, n) {
+            round++;
+            //beat to death
+            if (x >= h2) {
+                win = 1;
+                break;
+            }
+            //can't
+            int z = a[i];
+            mx = max(atk + x, mx);
+            atk += x, h1 -= z, h2 -= x;
+            s.insert(z);
+            if (h1 <= 0) {
+                while (h1 <= 0 && s.size()) {
                     h2 += x;
-                    h1 += tmp;
-                    s.erase(it);
-                }
-                else {
-                    it = s.begin();
-                    damage -= x;
-                    h2 += x;
-                    h1 += y;
-                    s.erase(it);
+                    int b = *s.rbegin();
+                    if (b >= y) {
+                        h1 += b;
+                        atk -= x;
+                        s.erase(--s.end());
+                    }
+                    else {
+                        h1 += y;
+                        atk -= x;
+                        s.erase(s.begin());
+                    }
                 }
             }
-            if (h1 > 0) {
-                s.insert(a[i]);
-                h1 += a[i];
-                i--;
-            }
-            else break;
         }
+        if (win) {
+            printf("Win\n%d\n", round);
+        }
+        else {
+            printf("Lose\n%d\n", mx);
+        }
+        return 0;
     }
-    if (win) {
-        cout << "Win" << endl << round << endl;
-    }
-    else {
-        cout << "Lose" << endl << ans << endl;
-    }
+
     return 0;
 }
 
