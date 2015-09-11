@@ -35,7 +35,14 @@ int main() {
     }
     int bad = 0;
     REPP(i, 1, n) if (f[i] != i && !use[i]) {
-        if (f[f[i]] == i) {
+        int cnt = 0;
+        int tmp = i;
+        while (!use[tmp]) {
+            cnt++;
+            use[tmp] = 1;
+            tmp = f[tmp];
+        }
+        if (cnt % 2 == 0) {
             ans.push_back({i, f[i]});
             use[i] = use[f[i]] = 1;
         }

@@ -20,39 +20,22 @@ const int inf = 0x3f3f3f3f;
 const double eps = 1e-9;
 
 using namespace std;
-const int N = 1005;
-int p[N], vis[N], tot;
 
-void prime() {
-    for (int i = 2; i < N; i++) {
-        if (!vis[i]) p[tot++] = i;
-        for (int j = 0; j < tot && i * p[j] < N; j++) {
-            vis[i * p[j]] = p[j];
-            if (i % p[j] == 0) break;
-        }
-    }
+const int N = 6;
+int f[N];
+int p[N];
+
+int find(int x) {
+    return f[x] == x ? x : f[x] = find(f[x]);
 }
-
-vector<int> ans;
 
 int main() {
 	ios :: sync_with_stdio(0);
-    int n;
-    prime();
-    cin >> n;
-    REP(i, tot) {
-        int tmp = p[i];
-        while (tmp <= n) {
-            ans.push_back(tmp);
-            tmp *= p[i];
-        }
-    }
-    cout << ans.size() << endl;
-    REP(i, ans.size()) {
-        cout << ans[i] << ' ';
-    }
-    cout << endl;
+
+    REP(i, 4) p[i] = i;
+
 
 
 	return 0;
 }
+

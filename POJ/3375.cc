@@ -27,6 +27,9 @@ void getRange(int x, int i) {
 }
 
 int main() {
+#ifdef HOME
+    freopen("in", "r", stdin);
+#endif
 
     scanf("%d%d", &m, &n);
     REPP(i, 1, m) {
@@ -47,13 +50,13 @@ int main() {
     REPP(i, 2, n) {
         getRange(b[i], i);
         REPP(j, L[i], R[i]) {
-            int tmp = j - 1;
-            if (tmp > R[i - 1]) {
-                tmp = R[i - 1];
-            }
-            if (tmp < L[i - 1]) {
+            if (j == L[i] && L[i] == L[i - 1]) {
                 dp[cur ^ 1][j] = 2e9;
                 continue;
+            }
+            int tmp = j - 1;
+            if (j - 1 > R[i - 1]) {
+                tmp = R[i - 1];
             }
             dp[cur ^ 1][j] = f[tmp] + abs(a[j] - b[i]);
         }
@@ -61,7 +64,7 @@ int main() {
         f[L[i]] = dp[cur][L[i]];
         REPP(j, L[i] + 1, R[i]) f[j] = min(f[j - 1], dp[cur][j]);
     }
-    printf("%d\n", f[R[n]]); 
+    printf("%d\n", f[R[n]]);
 
     return 0;
 }
