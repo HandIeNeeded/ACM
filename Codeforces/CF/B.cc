@@ -29,46 +29,58 @@ int main() {
     cin >> n;
     REPP(i, 1, n) cin >> f[i];  
     vector<int> fix;
-    vector<PII> ans;
     REPP(i, 1, n) if (f[i] == i) {
         fix.push_back(i);
     }
-    int bad = 0;
-    REPP(i, 1, n) if (f[i] != i && !use[i]) {
-        if (f[f[i]] == i) {
-            ans.push_back({i, f[i]});
-            use[i] = use[f[i]] = 1;
+    if (fix.size()) {
+        cout << "YES" << endl;
+        REPP(i, 1, n) if (i != fix[0]) {
+            cout << i << ' ' << fix[0] << endl;
         }
-        else {
-            bad = 1;
+        return 0;
+    }
+    int a = 0, b = 0;
+    VP ans;
+    int good = 1;
+    REPP(i, 1, n) {
+        if (f[f[i]] == i) {
+            a = i, b = f[i];
+            use[a] = use[b] = 1;
             break;
         }
     }
-
-    if (bad) {
+    if (!a || !b) good = 0;
+    REPP(i, 1, n) {
+        if (!use[i]) {
+            int tmp = i;
+            int cnt = 0;
+            VI num;
+            while (!use[tmp]) {
+                num.push_back(tmp);
+                use[tmp] = 1;
+                cnt++;
+                tmp = f[tmp];
+            }
+            if (cnt & 1) {
+                good = 0;
+                break;
+            }
+            else {
+                REP(i, num.size()) {
+                    if (i & 1) ans.push_back({a, num[i]});
+                    else ans.push_back({b, num[i]});
+                }
+            }
+        }
+    }
+    if (!good) {
         cout << "NO" << endl;
     }
     else {
         cout << "YES" << endl;
-        if (fix.size()) {
-            REP(i, fix.size() - 1) {
-                cout << fix[0] << ' ' << fix[i + 1] << endl;
-            }
-            REP(i, ans.size()) {
-                cout << fix[0] << ' ' << ans[i].first << endl;
-                cout << fix[0] << ' ' << ans[i].second << endl;
-            }
-        }
-        else {
-            int pa, pb;
-            tie(pa, pb) = ans[0];
-            cout << pa << ' ' << pb << endl;
-            REPP(i, 1, ans.size() - 1) {
-                int a, b;
-                tie(a, b) = ans[i];
-                cout << a << ' ' << pa << endl;
-                cout << b << ' ' << pb << endl;
-            }
+        cout << a << ' ' << b << endl;
+        REP(i, ans.size()) {
+            cout << ans[i].first << ' ' << ans[i].second << endl;
         }
     }
 
