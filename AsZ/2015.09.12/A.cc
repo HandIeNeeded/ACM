@@ -9,7 +9,6 @@ using namespace std;
 
 const int N = 105;
 const int MO = 1e9 + 7;
-int C[N][N];
 int dp[N][N][2], a[N], b[N];
 
 void add(int &x, int y) {
@@ -17,37 +16,26 @@ void add(int &x, int y) {
     if (x >= MO) x -= MO;
 }
 
-void init() {
-    REP(i, N) C[i][i] = C[i][0] = 1;
-    REPP(i, 1, N - 1) {
-        REPP(j, 1, i - 1) {
-            C[i][j] = C[i - 1][j];
-            add(C[i][j], C[i - 1][j - 1]);
-        }
-    }
-}
-
 char s[100005];
 string str = "*.^!";
 
 void trans(int l, int mid, int r) {
-    int x = mid - l + 1, y = r - mid;
     if (b[mid] == 0) {
-        add(dp[l][r][0], 1LL * dp[l][mid][1] % MO * dp[mid + 1][r][0] % MO);
-        add(dp[l][r][0], 1LL * dp[l][mid][0] % MO * dp[mid + 1][r][1] % MO);
-        add(dp[l][r][1], 1LL * dp[l][mid][1] % MO * dp[mid + 1][r][1] % MO);
+        add(dp[l][r][0], 1LL * dp[l][mid][1] * dp[mid + 1][r][0] % MO);
+        add(dp[l][r][0], 1LL * dp[l][mid][0] * dp[mid + 1][r][1] % MO);
+        add(dp[l][r][1], 1LL * dp[l][mid][1] * dp[mid + 1][r][1] % MO);
     }
     else if (b[mid] == 1) {
-        add(dp[l][r][1], 1LL * dp[l][mid][0] % MO * dp[mid + 1][r][0] % MO);
+        add(dp[l][r][1], 1LL * dp[l][mid][0] * dp[mid + 1][r][0] % MO);
     }
     else if (b[mid] == 2) {
-        add(dp[l][r][0], 1LL * dp[l][mid][0] % MO * dp[mid + 1][r][0] % MO);
+        add(dp[l][r][0], 1LL * dp[l][mid][0] * dp[mid + 1][r][0] % MO);
     }
     else {
-        add(dp[l][r][0], 1LL * dp[l][mid][1] % MO * dp[mid + 1][r][0] % MO);
-        add(dp[l][r][0], 1LL * dp[l][mid][0] % MO * dp[mid + 1][r][1] % MO);
-        add(dp[l][r][0], 1LL * dp[l][mid][1] % MO * dp[mid + 1][r][1] % MO);
-        add(dp[l][r][1], 1LL * dp[l][mid][0] % MO * dp[mid + 1][r][0] % MO);
+        add(dp[l][r][0], 1LL * dp[l][mid][1] * dp[mid + 1][r][0] % MO);
+        add(dp[l][r][0], 1LL * dp[l][mid][0] * dp[mid + 1][r][1] % MO);
+        add(dp[l][r][0], 1LL * dp[l][mid][1] * dp[mid + 1][r][1] % MO);
+        add(dp[l][r][1], 1LL * dp[l][mid][0] * dp[mid + 1][r][0] % MO);
     }
 }
 
@@ -55,8 +43,6 @@ int main() {
 #ifdef HOME
     freopen("A.in", "r", stdin);
 #endif
-
-    init();
 
     int t;
     scanf("%d", &t);
