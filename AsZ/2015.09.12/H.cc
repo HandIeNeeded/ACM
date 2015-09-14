@@ -10,20 +10,17 @@
 #define LC L, l, MID
 #define RC R, MID + 1, r
 
-#define N 1000100
-#define SI 2000200
+#define N 100100
+#define SI 400400
 #define MOD 880803841
 #define g 26
 
 using namespace std;
 
 int cnt[N << 2], flag[N << 2];
-
 int ql, qr;
-//===============================
 int a[SI], b[SI], s[N], S[N];
 int jc[SI], invj[SI], qm[SI];
-//===============================
 
 inline int add(int x, int y)
 {
@@ -170,22 +167,9 @@ void build(int x, int l, int r) {
 }
 
 int main() {
-//#ifdef HOME
-   // freopen("H.in", "r", stdin);
-//#endif
-  // freopen("tmp.in", "r", stdin);
-
-    //S[1] = 1;
-    //for (int k = 2; k <= 20; k++)
-    //    for (int i = k; i > 0; i--)
-    //        S[i] = add(S[i - 1], mul(S[i], i));
-    //prepare(n, m);
-    //while (true)
-    //{
-    //    int x;
-    //    scanf("%d", &x);
-    //    cout << s[x] << " " << S[x] << endl;
-    //}
+#ifdef HOME
+    freopen("H.in", "r", stdin);
+#endif
 
     int t;
     scanf("%d", &t);
@@ -193,9 +177,6 @@ int main() {
         int n, m, d;
         scanf("%d%d%d", &n, &m, &d);
         build(1, 1, m);
-        assert(m <= 1e5);
-        assert(n <= 1e5);
-        MST(a, 0), MST(b, 0), MST(s, 0);
         prepare(n, m);
         while (d--) {
             scanf("%d%d", &ql, &qr);

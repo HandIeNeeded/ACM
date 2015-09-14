@@ -11,7 +11,7 @@ const int N = 405;
 const int K = 55;
 
 int dp[N][K];
-int L[N], R[N], prefix[N];
+int L[N], R[N];
 
 int calc(int x) {
     return x * (x + 1) >> 1;
@@ -34,9 +34,6 @@ int main() {
             REPP(j, 0, k) {
                 dp[i][j] = 0;
             }
-        }
-        REPP(i, 1, n) {
-            prefix[i] = prefix[i - 1] + L[i] - R[i - 1] - 1;
         }
         REPP(i, 1, n) {
             REPP(t, 0, k) {

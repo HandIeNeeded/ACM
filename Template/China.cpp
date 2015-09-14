@@ -1,5 +1,3 @@
-#define LL long long
-
 LL a[N], mod[N]; //x == a[i] (mod mod[i]), i = 0, 1, ... , n - 1
 
 void exgcd( LL a, LL b, LL &d, LL &x, LL &y){
@@ -13,7 +11,8 @@ LL china (LL n, LL *a, LL *mod){// i = 0, 1, ... , n - 1
 	REP(i, n) {
 		LL d, x, y;
 		exgcd(M / mod[i], mod[i], d, x, y);
-		re = (re + x * M / mod[i] * a[i]) % M;
+        if (x < 0) x += M;
+		re = (re + M / mod[i] * x * a[i]) % M; //be careful overflow
 	}
 	return (re + M) % M;
 }
