@@ -77,8 +77,8 @@ int main() {
             }
             else {
                 REP(k, edge[i].size()) {
-                    int x = edge[i][k];
                     REPP(j, k + 1, edge[i].size() - 1) {
+                        int x = edge[i][k];
                         int y = edge[i][j];
                         if (x == y) continue;
                         modify(x, y);
