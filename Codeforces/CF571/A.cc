@@ -36,8 +36,8 @@ int main() {
     cin >> a >> b >> c >> l;
     LL ans = calc(l + 3);
     ans -= bad(a, b, c);
-    ans -= bad(a, c, b);
     ans -= bad(b, c, a);
+    ans -= bad(c, a, b);
     cout << ans << endl;
 
     return 0;
