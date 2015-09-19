@@ -13,6 +13,7 @@
 #define VS vector<string>
 #define PII pair<int, int>
 #define ALL(a) (a).begin(), (a).end()
+#define pb push_back
 #define make make_pair
 
 const int inf = 0x3f3f3f3f;
@@ -20,69 +21,29 @@ const double eps = 1e-9;
 
 using namespace std;
 
-const int N = 1e5 + 5;
-int f[N], use[N];
+const int N = 2e5 + 5;
+LL prefix[N], suffix[N], a[N];
 
 int main() {
 	ios :: sync_with_stdio(0);
-    int n;
-    cin >> n;
-    REPP(i, 1, n) cin >> f[i];  
-    vector<int> fix;
-    REPP(i, 1, n) if (f[i] == i) {
-        fix.push_back(i);
-    }
-    if (fix.size()) {
-        cout << "YES" << endl;
-        REPP(i, 1, n) if (i != fix[0]) {
-            cout << i << ' ' << fix[0] << endl;
-        }
-        return 0;
-    }
-    int a = 0, b = 0;
-    VP ans;
-    int good = 1;
+    int n, k, x;
+    cin >> n >> k >> x;
     REPP(i, 1, n) {
-        if (f[f[i]] == i) {
-            a = i, b = f[i];
-            use[a] = use[b] = 1;
-            break;
-        }
+        cin >> a[i];
+        prefix[i] = prefix[i - 1] | a[i];
     }
-    if (!a || !b) good = 0;
+    for (int i = n; i >= 1; i--) {
+        suffix[i] = suffix[i + 1] | a[i];
+    }
+    LL tmp = 1;
+    REP(i, k) tmp *= x;
+    LL ans = 0;
     REPP(i, 1, n) {
-        if (!use[i]) {
-            int tmp = i;
-            int cnt = 0;
-            VI num;
-            while (!use[tmp]) {
-                num.push_back(tmp);
-                use[tmp] = 1;
-                cnt++;
-                tmp = f[tmp];
-            }
-            if (cnt & 1) {
-                good = 0;
-                break;
-            }
-            else {
-                REP(i, num.size()) {
-                    if (i & 1) ans.push_back({a, num[i]});
-                    else ans.push_back({b, num[i]});
-                }
-            }
-        }
+        LL num = a[i] * tmp;
+        ans = max(ans, prefix[i - 1] | num | suffix[i + 1]);
     }
-    if (!good) {
-        cout << "NO" << endl;
-    }
-    else {
-        cout << "YES" << endl;
-        cout << a << ' ' << b << endl;
-        REP(i, ans.size()) {
-            cout << ans[i].first << ' ' << ans[i].second << endl;
-        }
-    }
+    cout << ans << endl;
+
 
 	return 0;
 }

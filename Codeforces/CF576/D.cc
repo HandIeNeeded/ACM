@@ -7,13 +7,11 @@
 
 using namespace std;
 
-const int N = 1e5 + 5;
-
 int main() {
 #ifdef HOME
     freopen("in", "r", stdin);
 #endif
-    
+
+
     return 0;
 }
-

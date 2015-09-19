@@ -20,22 +20,39 @@ const int inf = 0x3f3f3f3f;
 const double eps = 1e-9;
 
 using namespace std;
+const int N = 1005;
+int p[N], vis[N], tot;
+
+void prime() {
+    for (int i = 2; i < N; i++) {
+        if (!vis[i]) p[tot++] = i;
+        for (int j = 0; j < tot && i * p[j] < N; j++) {
+            vis[i * p[j]] = p[j];
+            if (i % p[j] == 0) break;
+        }
+    }
+}
+
+vector<int> ans;
 
 int main() {
 	ios :: sync_with_stdio(0);
-    int a, b;
-    cin >> a >> b;
-    int x = a / b - 1;
-    if (x < 0) {
-        cout << -1 << endl;
-        return 0;
+    int n;
+    prime();
+    cin >> n;
+    REP(i, tot) {
+        int tmp = p[i];
+        while (tmp <= n) {
+            ans.push_back(tmp);
+            tmp *= p[i];
+        }
     }
-    int k = ((a / b) - 1) >> 1;
-    double p = 1.0 * (a + b) / (2 * k + 2);
-    double q = 1.0 * (a - b) / (2 * k);
-    cout << fixed << setprecision(12) << min(p, q) << endl;
+    cout << ans.size() << endl;
+    REP(i, ans.size()) {
+        cout << ans[i] << ' ';
+    }
+    cout << endl;
 
 
 	return 0;
 }
-
