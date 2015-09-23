@@ -21,6 +21,8 @@ const double eps = 1e-9;
 
 using namespace std;
 
+const int N = 2e5 + 5;
+
 int main() {
 	ios :: sync_with_stdio(0);
 

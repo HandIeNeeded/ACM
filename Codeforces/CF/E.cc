@@ -8,19 +8,22 @@
 using namespace std;
 
 string s;
-vector<int> ans;
-set<int> L, R;
 
-int get(int start, int type) {
-    ans.clear();
+int solve(int start, int type, vector<int> &ans) {
+    set<int> L, R;
+    REP(i, s.size()) {
+        if (s[i] == 'L') L.insert(i);
+        else R.insert(i);
+    }
+    L.erase(start), R.erase(start);
     int res = 0;
     ans.push_back(start);
     int now = start;
-    L.erase(start), R.erase(start);
     while (L.size() || R.size()) {
+        //cout << now << ' ' << "hehe" << endl;
         if (type) {
             auto pos = R.upper_bound(now);
-            if (pos == R.end()) {
+            if (pos == R.end() || (pos == ++R.begin() && L.size() > R.size())) {
                 pos = R.begin();
                 res++;
             }
@@ -29,7 +32,7 @@ int get(int start, int type) {
         }
         else {
             auto pos = L.upper_bound(now);
-            if (pos == L.end()) {
+            if (pos == L.end() || (pos == ++L.begin() && R.size() > L.size())) {
                 pos = L.begin();
                 res++;
             }
@@ -39,46 +42,31 @@ int get(int start, int type) {
         type ^= 1;
         ans.push_back(now);
     }
-    return res;
+    return ans;
 }
 
 int main() {
     ios::sync_with_stdio(0);
 
-    set<int> L, R;
     cin >> s;
     int n = s.size();
     int a = 0, b = 0;
     REP(i, n) {
-        if(s[i] == 'L') a++, L.insert(i);
-        else b++, R.insert(i);
+        if(s[i] == 'L') a++;
+        else b++;
     }
     int start = 0, type;
-    int res = INT_MAX;
     if (a == b) {
         start = 0, type = s[0] == 'L';
-        ::L = L, ::R = R;
-        int a = get(*L.begin(), type);
-        ::L = L, ::R = R;
-        int b = get(*R.begin(), type);
-        if (a < b) {
-            ::L = L, ::R = R;
-            res = get(*L.begin(), type);
-        }
-        else {
-            res = b;
-        }
+        vector<int> a, b;
+        int ansa = solve(
     }
     else {
         if (a > b) {
             start = *L.begin(), type = 1;
-            ::L = L, ::R = R;
-            res = get(start, type);
         }
         else {
             start = *R.begin(), type = 0;
-            ::L = L, ::R = R;
-            res = get(start, type);
         }
     }
     cout << res << endl;
@@ -89,4 +77,3 @@ int main() {
 
     return 0;
 }
-
