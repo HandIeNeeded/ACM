@@ -36,14 +36,11 @@ int main() {
 #ifdef HOME
     //freopen("in", "r", stdin);
 #endif
-
     cin >> n >> k >> s;
     getFail();
     REP(i, n) {
         ans += char('0' + check(i));
     }
     cout << ans << endl;
-
     return 0;
 }
-
