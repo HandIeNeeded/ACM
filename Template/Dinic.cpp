@@ -1,6 +1,6 @@
 template<int N, int M, typename Type>
 struct MaxFlow{
-	int edge, tot, source, sink;
+	int edge, source, sink;
 	int lvl[N], cur[N];
 	int fi[N], ne[M << 1], en[M << 1];
 	Type cap[M << 1];
@@ -8,8 +8,7 @@ struct MaxFlow{
 	
 	void init(int S, int T) {
 		source = S, sink = T;
-		edge = 1, tot = n + 1;
-		REPP(i, 0, tot) fi[i] = 0;
+		edge = 1, MST(fi, 0);
 	}
 
 	void _add(int x, int y, Type z) {
@@ -23,7 +22,7 @@ struct MaxFlow{
 	
 	bool bfs() {
 		queue<int> q;
-		REPP(i, 0, tot) lvl[i] = 0;
+        MST(lvl, 0);
 		q.push(source), lvl[source] = 1;
 		while(q.size()) {
 			int x = q.front(); q.pop();
@@ -57,7 +56,7 @@ struct MaxFlow{
 	Type dinic() {
 		Type ans = 0;
 		while (bfs()) {
-			REPP(i, 0, tot) cur[i] = fi[i];
+            memcpy(cur, fi, sizeof(fi));
 			ans += dfs(source, INF);
 		}	
 		return ans;

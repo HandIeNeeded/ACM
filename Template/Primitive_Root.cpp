@@ -14,6 +14,7 @@ int pow_mod(int x, int y, int mod) {
 }
 
 void getfac(int phi) {
+    fac.clear();
 	for (int i = 2; i * i <= phi; i ++) {
 		if (phi % i == 0) {
 			fac.push_back(i);
@@ -26,7 +27,7 @@ void getfac(int phi) {
 }
 
 int primitive_root(int p) {
-	getfac(phi);
+	phi = p - 1, getfac(phi);
 	REPP(g, 1, p - 1) {
 		bool bad = 0;
 		REP(i, fac.size()) {
