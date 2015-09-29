@@ -7,11 +7,10 @@
 
 using namespace std;
 
-const int N = 6e4;
+const int N = 3e4;
 const int M = 2005;
-unordered_map<int, int> mp;
-int dp[2][N], cnt[2][N];
-int fac[M], inv[M * M], MO, mod, phi, n;
+unordered_map<int, int> dp[N], cnt[N];
+int fac[M], MO, mod, phi, n;
 int prefix[N];
 int p[N], vis[N], tot;
 
@@ -27,27 +26,19 @@ void prime() {
 }
 
 int pow_mod(int a, int b) {
-	int ans = 1;
-	while (b) {
-		if (b & 1) ans = 1LL * ans * a % mod;
-		b >>= 1;
-		a = 1LL * a * a % mod;
-	}
-	return ans;
+    int ans = 1;
+    while (b) {
+        if (b & 1) ans = 1LL * ans * a % mod;
+        b >>= 1;
+        a = 1LL * a * a % mod;
+    }
+    return ans;
 }
 
 void init(int tot) {
     fac[0] = 1;
     REPP(i, 1, MO - 1) {
         fac[i] = 1LL * i * fac[i - 1] % mod;
-    }
-    inv[0] = 0, inv[1] = 1;
-    REPP(i, 2, mod - 1) {
-        if (i % MO == 0) {
-            inv[i] = 0;
-            continue;
-        }
-        inv[i] = mod - 1LL * mod / i * inv[mod % i] % mod;
     }
     prefix[0] = 1;
     REPP(i, 1, tot) {
@@ -71,8 +62,7 @@ int calc(int x) {
 }
 
 int Div(int a, int b) {
-    //return 1LL * a * pow_mod(b, phi - 1) % mod;
-    return 1LL * a * inv[b] % mod;
+    return 1LL * a * pow_mod(b, phi - 1) % mod;
 }
 
 int main() {
@@ -98,39 +88,41 @@ int main() {
         int rt = int(sqrt(n + 0.5));
         int tot = upper_bound(p + 1, p + ::tot, rt) - p - 1;
         init(tot);
-        mp.clear();
+        REP(i, tot + 1) dp[i].clear(), cnt[i].clear();
         vector<int> tmp;
-        int now = 0;
         for (int i = 1; i <= n; i++) {
             int k = n / i;
+            dp[0][k] = calc(k);
+            cnt[0][k] = k;
             tmp.push_back(k);
-            dp[0][now] = calc(k);
-            cnt[0][now] = k;
-            mp[k] = now++;
             i = n / k;
         }
-        int cur = 0;
         REPP(i, 1, tot) {
-            REP(j, now) {
+            REP(j, tmp.size()) {
                 int k = tmp[j];
                 if (p[i] * p[i] > k) {
-                    dp[cur ^ 1][j] = dp[cur][j];
-                    cnt[cur ^ 1][j] = cnt[cur][j];
+                    dp[i][k] = dp[i - 1][k];
+                    cnt[i][k] = cnt[i - 1][k];
                     continue;
                 }
-                int id = mp[k / p[i]];
-                dp[cur ^ 1][j] = Div(dp[cur][j], Div(dp[cur][id], prefix[i - 1]));
-                int &ans = dp[cur ^ 1][j];
+                dp[i][k] = Div(dp[i - 1][k], Div(dp[i - 1][k / p[i]], prefix[i - 1]));
+                int &ans = dp[i][k];
                 if (p[i] != MO) {
-                    int cc = pow_mod(p[i], cnt[cur][id] - i) % mod;
+                    int cc = pow_mod(p[i], cnt[i - 1][k / p[i]] - i) % mod;
                     ans = Div(ans, cc);
                 }
-                cnt[cur ^ 1][j] = cnt[cur][j] - (cnt[cur][id] - i);
+                cnt[i][k] = cnt[i - 1][k] - (cnt[i - 1][k / p[i]] - i);
             }
-            cur ^= 1;
+            //for (auto &x: cnt[i]) {
+            //    cout << '('<< x.first << ',' << x.second << ')' << ' ';
+            //}
+            //cout << endl;
+            //for (auto &x: dp[i]) {
+            //    cout << '(' << x.first << ',' << x.second << ')' << ' ';
+            //}
+            //cout << endl;
         }
-        printf("Case #%d: %d\n", ca++, dp[cur][mp[n]] % MO);
+        printf("Case #%d: %d\n", ca++, dp[tot][n] % MO);
     }
     return 0;
 }
-
