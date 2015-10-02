@@ -7,11 +7,6 @@
 
 using namespace std;
 
-void exgcd( LL a, LL b, LL &d, LL &x, LL &y){
-	if (!b) d = a, x = 1, y = 0;
-	else exgcd(b, a % b, d, y, x), y -= (a / b) * x;
-}
-
 //p^k, 2*p^k, 2, 4
 int phi, p;
 
@@ -72,27 +67,14 @@ int main() {
             int g = primitive_root(p);
             int half = phi >> 1;
             REP(i, phi) {
-                int mod = phi;
-                int lhs = (k1 + b1) % mod;
-                int rhs = (i + half) % mod;
-                int d = __gcd(lhs, mod);
-                if (rhs % d) {
+                int lhs = 1LL * i * (k1 + b1) % phi;
+                int rhs = lhs - half;
+                if (rhs < 0) rhs += phi;
+                if (1LL * i * k1 % phi != 1LL * rhs * k2 % phi) {
                     continue;
                 }
                 else {
-                    lhs /= d, rhs /= d, mod /= d;
-                    LL a, b, c;
-                    exgcd(lhs, mod, a, b, c);
-                    b = 1LL * rhs * b % mod;
-                    if (b < 0) b += mod;
-                    REP(j, d) {
-                        if (1LL * k1 * b % phi != 1LL * k2 * i % phi) {
-                            b += mod;
-                            continue;
-                        }
-                        ans.push_back({pow_mod(g, b, p), pow_mod(g, i, p)});
-                        b += mod;
-                    }
+                    ans.push_back({pow_mod(g, i, p), pow_mod(g, rhs, p)});
                 }
             }
             if (ans.size() == 0) {

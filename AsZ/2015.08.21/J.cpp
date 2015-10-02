@@ -60,13 +60,6 @@ void dfs(int u)
             dfs(v);
             int tmp = son[u];
             son[u] += son[v];
-//            for (int j = 0; j <= son[u] + son[v]; j++)
-//                ff[j] = 0;
-//            for (int j = 0; j <= son[v]; ++ j){
-//                for (int k = 0; k <= son[u]; ++ k){
-//                    ff[j + k] = add(ff[j + k], mul(f[u][k], f[v][j]));
-//                }
-//            }
             for (int j = son[u]; j >= 0; j--)
             {
                 f[u][j] = 0;
@@ -74,14 +67,9 @@ void dfs(int u)
                     f[u][j] = add(f[u][j], mul(f[u][k], f[v][j - k]));
                 f[u][j] = mul(f[u][j], c[son[u]][son[v]]);
             }
-//            son[u] += son[v];
-//            for (int j = 0; j <= son[u]; j++)
-//                f[u][j] = mul(ff[j], c[son[u]][son[v]]);
         }
         i = nex[i];
     }
-//    for (int i = son[u]; i > 0; i--)
-//        f[u][i] = mul(f[u][i], son[u]);
     son[u]++;
     for (int i = son[u]; i > 0; i--)
     {
@@ -93,7 +81,6 @@ void dfs(int u)
 
 int main()
 {
-    freopen("J.in", "r", stdin);
 
     prepare();
 

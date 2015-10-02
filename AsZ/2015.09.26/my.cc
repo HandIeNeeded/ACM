@@ -3,166 +3,108 @@
 #define LL long long
 #define REP(i, a) REPP(i, 0, (a) - 1)
 #define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
-#define MST(a, b) memset(a, b, sizeof(a))
-#define ALL(a) (a).begin(), (a).end()
 #define PII pair<int, int>
 
 using namespace std;
 
-const int N = 22;
-const int MO = 1e9 + 7;
-
-struct Unit{
-    int cnt, mx;
-}mp[N][N];
-
-struct rect{
-    int a, b, c, d, v;
-
-    void print() {
-        cout << a << ' ' << b << ' '  << c << ' '  << d << ' ' << v << endl;
-    }
-}p[N];
-
-vector<int> row, col;
-vector<PII> use[N];
-int r, c, n, m, h, w, tot;
-bool vis[N][N];
-
-void add(int &x, int y) {
-    x += y;
-    if (x >= MO) x -= MO;
+void exgcd( LL a, LL b, LL &d, LL &x, LL &y){
+	if (!b) d = a, x = 1, y = 0;
+	else exgcd(b, a % b, d, y, x), y -= (a / b) * x;
 }
 
-void toMin(int &x, int y) {
-    if (y < x) x = y;
-}
+//p^k, 2*p^k, 2, 4
+int phi, p;
 
-void update(int id, int x, int y, int a, int b, int v) {
-    int r = a - x, c = b - y;
-    REP(i, r) {
-        REP(j, c) {
-            toMin(mp[x + i][y + j].mx, v);
-            use[id].push_back({x + i, y + j});
-            if (!vis[x + i][y + j]) tot += mp[x + i][y + j].cnt;
-            vis[x + i][y + j] = 1;
-        }
-    }
-}
+vector<int> fac;
 
-int pow_mod(int a, int b) {
+int pow_mod(int x, int y, int mod) {
 	int ans = 1;
-	while (b) {
-		if (b & 1) ans = 1LL * ans * a % MO;
-		b >>= 1;
-		a = 1LL * a * a % MO;
+	while (y) {
+		if (y & 1) ans = 1LL * ans * x % mod;
+		y >>= 1;
+		x = 1LL * x * x % mod;
 	}
 	return ans;
 }
 
-void modifyr(int &x) {
-    x = lower_bound(ALL(row), x) - row.begin() + 1;
+void getfac(int phi) {
+    fac.clear();
+	for (int i = 2; i * i <= phi; i ++) {
+		if (phi % i == 0) {
+			fac.push_back(i);
+			while (phi % i == 0) {
+				phi /= i;
+			}
+		}
+	}
+	if (phi > 1) fac.push_back(phi);
 }
 
-void modifyc(int &x) {
-    x = lower_bound(ALL(col), x) - col.begin() + 1;
-}
-
-void modify(rect &x) {
-    modifyr(x.a), modifyr(x.c);
-    modifyc(x.b), modifyc(x.d);
-}
-
-int get() {
-    int ans = 1;
-    REPP(i, 1, r) {
-        REPP(j, 1, c) if (vis[i][j]) {
-            ans = 1LL * ans * pow_mod(mp[i][j].mx, mp[i][j].cnt) % MO;
-        }
-    }
-    return ans;
-}
-
-int ans;
-
-void dfs(int dep, int odd, int now) {
-    //cout << dep << ' ' << odd << ' ' << now << endl;
-    if (dep == n) {
-        if (odd) add(ans, MO - now);
-        else add(ans, now);
-        return ;
-    }
-    dfs(dep + 1, odd, now);
-    vector<int> tmp;
-    int flag = 0;
-    for(auto &q: use[dep]) {
-        int x, y;
-        tie(x, y) = q;
-        tmp.push_back(mp[x][y].mx);
-        int cc = pow_mod(mp[x][y].mx, mp[x][y].cnt);
-        now = 1LL * now * pow_mod(cc, MO - 2) % MO;
-        toMin(mp[x][y].mx, p[dep].v - 1);
-        if (mp[x][y].mx == 0) {
-            flag = 1;
-            continue;
-        }
-        now = 1LL * now * pow_mod(mp[x][y].mx, mp[x][y].cnt) % MO;
-    }
-    if (!flag) {
-        dfs(dep + 1, odd ^ 1, now);
-    }
-    int id = 0;
-    for (auto &q: use[dep]) {
-        int x, y;
-        tie(x, y) = q;
-        mp[x][y].mx = tmp[id++];
-    }
+int primitive_root(int p) {
+	phi = p - 1, getfac(phi);
+	REPP(g, 1, p - 1) {
+		bool bad = 0;
+		REP(i, fac.size()) {
+			if (pow_mod(g, phi / fac[i], p) == 1) {
+				bad = 1;
+				break;
+			}
+		}
+		if (!bad) return g;
+	}
+	return -1;
 }
 
 int main() {
 #ifdef HOME
-    //freopen("4.in", "r", stdin);
+    //freopen("11.in", "r", stdin);
 #endif
 
-    int t, ca = 1;
-    scanf("%d", &t);
-    while (t--) {
-        scanf("%d%d%d%d", &h, &w, &m, &n);
-        row.clear(), col.clear();
-        row.push_back(1), row.push_back(h + 1);
-        col.push_back(1), col.push_back(w + 1);
-        REP(i, n) {
-            int a, b, c, d, v;
-            scanf("%d%d%d%d%d", &a, &b, &c, &d, &v);
-            row.push_back(a), row.push_back(c + 1);
-            col.push_back(b), col.push_back(d + 1);
-            p[i] = (rect) {a, b, c + 1, d + 1, v};
+    int ca = 1;
+    int k1, b1, k2;
+    while (scanf("%d%d%d%d", &p, &k1, &b1, &k2) > 0) {
+        vector<PII> ans;
+        printf("Case #%d:\n", ca++);
+        if (p == 2) {
+            puts("1 1");
         }
-        sort(ALL(row)), sort(ALL(col));
-        row.resize(unique(ALL(row)) - row.begin());
-        col.resize(unique(ALL(col)) - col.begin());
-        REP(i, n) {
-            use[i].clear();
-            modify(p[i]);
-        }
-        r = row.size() - 1, c = col.size() - 1;
-        REPP(i, 1, r) {
-            REPP(j, 1, c) {
-                mp[i][j] = (Unit) {(row[i] - row[i - 1]) * (col[j] - col[j - 1]), m};
+        else {
+            int g = primitive_root(p);
+            int half = phi >> 1;
+            REP(i, phi) {
+                int mod = phi;
+                int lhs = (k1 + b1) % mod;
+                int rhs = (i + half) % mod;
+                int d = __gcd(lhs, mod);
+                if (rhs % d) {
+                    continue;
+                }
+                else {
+                    lhs /= d, rhs /= d, mod /= d;
+                    LL a, b, c;
+                    exgcd(lhs, mod, a, b, c);
+                    b = 1LL * rhs * b % mod;
+                    if (b < 0) b += mod;
+                    REP(j, d) {
+                        if (1LL * k1 * b % phi != 1LL * k2 * i % phi) {
+                            b += mod;
+                            continue;
+                        }
+                        ans.push_back({pow_mod(g, b, p), pow_mod(g, i, p)});
+                        b += mod;
+                    }
+                }
+            }
+            if (ans.size() == 0) {
+                puts("-1");
+            }
+            else {
+                sort(ans.begin(), ans.end());
+                for (auto &p: ans) {
+                    printf("%d %d\n", p.first, p.second);
+                }
             }
         }
-        tot = 0;
-        REPP(i, 1, r) {
-            REPP(j, 1, c) vis[i][j] = 0;
-        }
-        REP(i, n) {
-            update(i, p[i].a, p[i].b, p[i].c, p[i].d, p[i].v);
-        }
-        ans = 0;
-        int mul = pow_mod(m, h * w - tot);
-        dfs(0, 0, get());
-        ans = 1LL * ans * mul % MO;
-        printf("Case #%d: %d\n", ca++, ans);
     }
     return 0;
 }

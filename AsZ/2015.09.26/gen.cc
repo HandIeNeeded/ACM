@@ -10,28 +10,29 @@ using namespace std;
 const int N = 1e5 + 5;
 int tmp[N];
 
-
-
 const int M = 8;
+int p[N], vis[N], tot;
+
+void prime() {
+    for (int i = 2; i < N; i++) {
+        if (!vis[i]) p[tot++] = i;
+        for (int j = 0; j < tot && i * p[j] < N; j++) {
+            vis[i * p[j]] = p[j];
+            if (i % p[j] == 0) break;
+        }
+    }
+}
 
 int main() {
 	ios :: sync_with_stdio(0);
     //freopen("tmp.in", "w", stdout);
 	srand(time(0) % clock());
+    prime();
     int t = 2;
-    cout << t << endl;
     REP(i, t) {
-        int h = M, w = M, m = 10, n = rand() % M;
-        cout << h << ' '  << w << ' ' << m << ' ' << n << endl;
-        REP(i, n) {
-            int x = rand() % h + 1, y = rand() % w + 1; 
-            int dx = rand() % M, dy = rand() % M;
-            while (x + dx > h || y + dy > w) {
-                dx = rand() % M;
-                dy = rand() % M;
-            }
-            cout << x << ' '  << y << ' ' << x + dx << ' ' << y + dy << ' ' << rand() % m + 1 << endl;
-        }
+        int mod = p[rand() % 30 + 1];
+        int a = rand() % 100, b = rand() % 100, c = rand() % 100;
+        cout << mod << ' ' << a << ' ' << b << ' ' << c << endl;
     }
 	return 0;
 }

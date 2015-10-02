@@ -12,7 +12,7 @@ const int M = 2005;
 unordered_map<int, int> mp;
 int dp[2][N], cnt[2][N];
 int fac[M], inv[M * M], MO, mod, phi, n;
-int prefix[N];
+int prefix[N], tmp[N];
 int p[N], vis[N], tot;
 
 void prime() {
@@ -99,11 +99,10 @@ int main() {
         int tot = upper_bound(p + 1, p + ::tot, rt) - p - 1;
         init(tot);
         mp.clear();
-        vector<int> tmp;
         int now = 0;
         for (int i = 1; i <= n; i++) {
             int k = n / i;
-            tmp.push_back(k);
+            tmp[now] = k;
             dp[0][now] = calc(k);
             cnt[0][now] = k;
             mp[k] = now++;
