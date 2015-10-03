@@ -5,11 +5,13 @@ struct SuffixArray {
 	//sa[i] 0base sa[0] = n 后缀数组排名i的后缀是第几个后缀
 	//rank[i] 0base 第i个后缀在后缀数组里面的排名
 	//height[i] sa[i]和sa[i-1]的最长公共前缀, height[0] = 0, height[1] = 0;
+    //结构体里的n比实际串长大1
 	
-	void build(const T *str, int x) {//x 是加了一个特殊字符之后str的长度否则x==1会跪
+	void build(const T *str, int x, int m = 256) {//x 是未处理的str的长度
 		n = x;
         REP(i, n) s[i] = str[i];
-		getSA(256), getHeight();
+        s[n++] = int('$'), s[n] = 0;
+		getSA(m), getHeight();
 	}
 
 	void getSA(int m) {//m 字符集大小
@@ -59,7 +61,6 @@ SuffixArray<char> SA;
 // sa[i] 表示排名为 i 的后缀, rank[i]表示第i个后缀的排名, height[i] 表示 sa[i] 与 sa[i - 1] 最长公共前缀
 // 求出的rank, height, sa数组和倍增算法求得的完全一样
 // 支持对于任意类型子序列进行求解，注意原序列中所有数据为正，原序列范围较大需要离散化
-// 注意需要手动调用 getHeight()
 
 #define F(x) ((x) / 3 + ((x) % 3 == 1 ? 0 : ty))
 #define G(x) ((x) < ty ? (x) * 3 + 1 : ((x) - ty) * 3 + 2)
@@ -125,6 +126,7 @@ struct SuffixArray {
         for (i = 0; i < n; ++i) str[i] = (int)s[i];
         str[n] = 0; sz = n + 1;
         dc3(str, sa, sz, m);
+        getHeight();
     }
 
     void getHeight() {
