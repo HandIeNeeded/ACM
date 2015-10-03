@@ -1,10 +1,12 @@
 #include <bits/stdc++.h>
+#include <ext/hash_map>
 
 #define LL long long
 #define REP(i, a) REPP(i, 0, (a) - 1)
 #define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
 
 using namespace std;
+using namespace __gnu_cxx;
 
 int pow_mod(int a, int b, int mod) {
     assert(b >= 0);
@@ -64,7 +66,7 @@ void prime() {
     }
 }
 
-map<int, int> mp[20];
+hash_map<int, int> mp[20];
 int step[20], cnt[20], inv[20];
 
 void init(int q, const vector<int> &p, const vector<int> &g) {

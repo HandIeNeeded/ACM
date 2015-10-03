@@ -22,7 +22,7 @@ void dfs(int f, int d, int l, int r)
 
 int main()
 {
-    freopen("8.in", "r", stdin);
+    //freopen("8.in", "r", stdin);
     int ttt;
     scanf("%d", &ttt);
     while (ttt--)

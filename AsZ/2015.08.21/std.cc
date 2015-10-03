@@ -9,7 +9,6 @@ using namespace std;
 using namespace __gnu_cxx;
 
 int pow_mod(int a, int b, int mod) {
-    assert(b >= 0);
     int ans = 1;
     while (b) {
         if (b & 1) ans = 1LL * ans * a % mod;
@@ -97,10 +96,27 @@ int get(int x, int p, int g, int id) {
     return -1;
 }
 
+int getPhi(int x) {
+    int ans = 1;
+    REP(i, tot) {
+        if (p[i] * p[i] > x) break;
+        if (x % p[i] == 0) {
+            ans *= p[i] - 1;
+            x /= p[i];
+            while (x % p[i] == 0) {
+                ans *= p[i];
+                x /= p[i];
+            }
+        }
+    }
+    if (x > 1) {
+        ans *= (x - 1);
+    }
+    return ans;
+}
+
 int solve(int x, int y, int p, int g, int id) {
     if (y == 1) return 0;
-    if (y == 0 && x) return -1;
-    if (x == 0 && y) return -1;
     if (p == 2) {
         return x == y ? 1 : -1;
     }
@@ -109,16 +125,16 @@ int solve(int x, int y, int p, int g, int id) {
     int d = __gcd(a, phi);
     if (b % d) return -1;
     a /= d, b /= d, phi /= d;
-    LL xx, yy, zz;
-    exgcd(a, phi, zz, xx, yy);
-    int ans = 1LL * xx * b % phi;
-    if (ans <= 0) ans += phi;
-    return ans;
+    int tmp = getPhi(phi);
+    return 1LL * pow_mod(a, tmp - 1, phi) * b % phi;
+    //LL xx, yy, zz;
+    //exgcd(a, phi, zz, xx, yy);
+    //return xx * b % phi;
 }
 
 int main() {
 #ifdef HOME
-    freopen("tmp.in", "r", stdin);
+    //freopen("in", "r", stdin);
 #endif
     clock_t st = clock(), ed;
     prime();
@@ -141,15 +157,6 @@ int main() {
             g.push_back(solver.primitive_root(sum));
         }
         init(m, fac, g);
-        //cout << fac.size() << ' ' << g.size() << endl;
-        //for (auto &x: fac) {
-        //    cout << x << ' ';
-        //}
-        //cout << endl;
-        //for (auto &x: g) {
-        //    cout << x << ' ';
-        //}
-        //cout << endl;
         printf("Case #%d:\n", ca++);
         while (m--) {
             int ans = INT_MAX;

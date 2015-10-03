@@ -100,7 +100,7 @@ void dc3(int *r,int *sa,int n,int m){ //长度，字符集大小
 
 int hg[N];
 
-void gethg(){
+void gethg(int n){
 	REP(i, n) r[sa[i]] = i;
 	int k = 0;
 	REP(i, n) {

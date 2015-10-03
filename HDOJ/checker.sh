@@ -1,7 +1,7 @@
 while true; do
 	./gen>tmp.in
-	./std<tmp.in>std.out
-	./my<tmp.in>my.out
+	./5030_SA<tmp.in>std.out
+	./5030<tmp.in>my.out
 	if diff my.out std.out; then
 		echo "AC"
 	else

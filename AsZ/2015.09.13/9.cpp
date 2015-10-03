@@ -29,7 +29,7 @@ void calc1(int v, int c, int s)
 
 int main()
 {
-    freopen("9.in", "r", stdin);
+    //freopen("9.in", "r", stdin);
     int ttt;
     scanf("%d", &ttt);
     while (ttt--)
