@@ -16,17 +16,11 @@ int main() {
 
     srand(time(0) % clock());
 
-    int t = 1, n;
-    REP(i, t) {
-        if (i == 1) n = 1;
-        else n = 1000;
-        cout << rand () % 5 + 1 << endl;
-        REP(i, n) {
-            cout << char(rand() % 26 + 'a');
-        }
-        cout << endl;
+    int n = 10;
+    REP(i, n) {
+        cout << char(rand() % 26 + 'a');
     }
-    cout << 0 << endl;
+    cout << endl;
 
     return 0;
 }

@@ -1,4 +1,3 @@
-const int N = 1e5 + 5;
 char s[N];
 struct Exp{
     bool error;
@@ -47,8 +46,7 @@ struct Exp{
                 for (i++; isdigit(s[i]); i++) {
                     t = t * 10 + s[i] - '0';
                 }
-                num[++tot] = t;
-                i--;
+                num[++tot] = t, i--;
             }
             else {
                 while (top > 0 && priority(op[top], s[i])) {

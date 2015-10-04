@@ -1,59 +1,59 @@
 template<typename T = int>
 struct SuffixArray {
-	int s[N], sa[N], a[N], b[N], c[N], n;
-	int rank[N], height[N]; 
-	//sa[i] 0base sa[0] = n 后缀数组排名i的后缀是第几个后缀
-	//rank[i] 0base 第i个后缀在后缀数组里面的排名
-	//height[i] sa[i]和sa[i-1]的最长公共前缀, height[0] = 0, height[1] = 0;
+    int s[N], sa[N], a[N], b[N], c[N], n;
+    int rank[N], height[N]; 
+    //sa[i] 0base sa[0] = n 后缀数组排名i的后缀是第几个后缀
+    //rank[i] 0base 第i个后缀在后缀数组里面的排名
+    //height[i] sa[i]和sa[i-1]的最长公共前缀, height[0] = 0, height[1] = 0;
     //结构体里的n比实际串长大1
-	
-	void build(const T *str, int x, int m = 256) {//x 是未处理的str的长度
-		n = x;
+
+    void build(const T *str, int x, int m = 256) {//x 是未处理的str的长度
+        n = x;
         REP(i, n) s[i] = str[i];
         s[n++] = int('$'), s[n] = 0;
-		getSA(m), getHeight();
-	}
+        getSA(m), getHeight();
+    }
 
-	void getSA(int m) {//m 字符集大小
-		int *x = a, *y = b;
+    void getSA(int m) {//m 字符集大小
+        int *x = a, *y = b;
         fill(c, c + m, 0);
-		REP(i, n) c[x[i] = s[i]]++;
-		REPP(i, 1, m - 1) c[i] += c[i - 1];
-		for (int i = n - 1; i >= 0; --i) sa[--c[x[i]]] = i;
-		for(int k = 1; k <= n; k <<= 1) {
-			int p = 0;
-			for (int i = n - k; i < n; ++i) y[p++] = i;
-			REP(i, n) if (sa[i] >= k) y[p++] = sa[i] - k;
-			REP(i, m) c[i] = 0;
-			REP(i, n) c[x[y[i]]]++;
-			REPP(i, 1, m - 1) c[i] += c[i - 1];
-			for (int i = n - 1; i >= 0; --i) sa[--c[x[y[i]]]] = y[i];
-			swap(x, y);
-			p = 1; x[sa[0]] = 0;
-			REPP(i, 1, n - 1) {
-				x[sa[i]] = y[sa[i - 1]] == y[sa[i]] && y[sa[i - 1] + k] == y[sa[i] + k] ? p - 1 : p++;
-			}
-			if (p >= n) break;
-			m = p;
-		}
-	}
+        REP(i, n) c[x[i] = s[i]]++;
+        REPP(i, 1, m - 1) c[i] += c[i - 1];
+        for (int i = n - 1; i >= 0; --i) sa[--c[x[i]]] = i;
+        for(int k = 1; k <= n; k <<= 1) {
+            int p = 0;
+            for (int i = n - k; i < n; ++i) y[p++] = i;
+            REP(i, n) if (sa[i] >= k) y[p++] = sa[i] - k;
+            REP(i, m) c[i] = 0;
+            REP(i, n) c[x[y[i]]]++;
+            REPP(i, 1, m - 1) c[i] += c[i - 1];
+            for (int i = n - 1; i >= 0; --i) sa[--c[x[y[i]]]] = y[i];
+            swap(x, y);
+            p = 1; x[sa[0]] = 0;
+            REPP(i, 1, n - 1) {
+                x[sa[i]] = y[sa[i - 1]] == y[sa[i]] && y[sa[i - 1] + k] == y[sa[i] + k] ? p - 1 : p++;
+            }
+            if (p >= n) break;
+            m = p;
+        }
+    }
 
-	void getHeight(){
-		REP(i, n) rank[sa[i]] = i;
-		int k = 0;
-		REP(i, n) {
-			if (k) k--;
-			int j = sa[rank[i] - 1];
-			while (s[i + k] == s[j + k]) k++;
-			height[rank[i]] = k;
-		}
-	}
+    void getHeight(){
+        REP(i, n) rank[sa[i]] = i;
+        int k = 0;
+        REP(i, n) {
+            if (k) k--;
+            int j = sa[rank[i] - 1];
+            while (s[i + k] == s[j + k]) k++;
+            height[rank[i]] = k;
+        }
+    }
 
-	void print(){
-		REP(i, n) cout << sa[i] << " \n"[i == n - 1];
-		REP(i, n) cout << rank[i] << " \n"[i == n - 1];
-		REP(i, n) cout << height[i] << " \n"[i == n - 1];
-	}
+    void print(){
+        REP(i, n) cout << sa[i] << " \n"[i == n - 1];
+        REP(i, n) cout << rank[i] << " \n"[i == n - 1];
+        REP(i, n) cout << height[i] << " \n"[i == n - 1];
+    }
 };
 SuffixArray<char> SA;
 
@@ -67,12 +67,12 @@ SuffixArray<char> SA;
 
 template<typename T = char>
 struct SuffixArray {
-    int str[N * 3], sa[N * 3], rank[N], height[N], sz;
+    int str[N * 3], sa[N * 3], rank[N], height[N], n;
     int wa[N], wb[N], wv[N], ws[N];
 
     int &operator [](int k) { return sa[k]; }
 
-    int size() const { return sz; }
+    int size() const { return n; }
 
     bool equal(const int *r, int a, int b) const {
         return r[a] == r[b] && r[a + 1] == r[b + 1] && r[a + 2] == r[b + 2];
@@ -121,26 +121,27 @@ struct SuffixArray {
         for ( ; j < tz; ++j) sa[k++] = wb[j];
     }
 
-    void build(const T *s, int n, int m = 128) {//n 是原串长度不做任何修改 n==1没有问题
+    void build(const T *s, int x, int m = 256) {//x 是原串长度不做任何修改 x==1没有问题
         int i;
-        for (i = 0; i < n; ++i) str[i] = (int)s[i];
-        str[n] = 0; sz = n + 1;
-        dc3(str, sa, sz, m);
+        for (i = 0; i < x; ++i) str[i] = (int)s[i];
+        str[x] = 0; n = x + 1;
+        dc3(str, sa, n, m);
         getHeight();
     }
 
     void getHeight() {
         int i, j, k = 0;
-        for (i = 0; i < sz; ++i) rank[sa[i]] = i;
-        for (i = 0; i < sz; height[rank[i++]] = k) {
+        for (i = 0; i < n; ++i) rank[sa[i]] = i;
+        for (i = 0; i < n; height[rank[i++]] = k) {
             for(k ? --k : 0, j = sa[rank[i] - 1]; str[i + k] == str[j + k]; ++k);
         }
     }
 
-	void print(){
-		REP(i, n) cout << sa[i] << " \n"[i == n - 1];
-		REP(i, n) cout << rank[i] << " \n"[i == n - 1];
-		REP(i, n) cout << height[i] << " \n"[i == n - 1];
-	}
+    void print(){
+        REP(i, n) cout << sa[i] << " \n"[i == n - 1];
+        REP(i, n) cout << rank[i] << " \n"[i == n - 1];
+        REP(i, n) cout << height[i] << " \n"[i == n - 1];
+    }
 };
 SuffixArray<char> SA;
+
