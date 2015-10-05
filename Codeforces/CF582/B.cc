@@ -77,7 +77,7 @@ int main() {
             }
         }
         int d = sum - pre;
-        ans = sum + (t - n * n) * d;
+        ans = pre + (t - n * n) * d;
     }
     cout << ans << endl;
 
