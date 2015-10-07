@@ -17,6 +17,8 @@ int main()
 #ifdef HOME
     freopen("I.in", "r", stdin);
 #endif
+    freopen("i18n.in", "r", stdin);
+    freopen("i18n.out", "w", stdout);
     char ch;
     while ((ch = getchar()) != EOF)
     {

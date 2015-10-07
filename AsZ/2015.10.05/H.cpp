@@ -46,6 +46,8 @@ int main() {
 #ifndef ONLINE_JUDGE
     freopen("H.in", "r", stdin);
 #endif
+    freopen("hanoi.in", "r", stdin);
+    freopen("hanoi.out", "w", stdout);
     int n;
     scanf("%d\n", &n);
     memset(f, -1, sizeof(f));

@@ -1,4 +1,4 @@
-namespace PT{
+struct PT{
     struct Node{
         Node *ch[C], *suffix;
         int len;
@@ -11,7 +11,7 @@ namespace PT{
         MST(odd->ch, 0), MST(even->ch, 0);
         odd->suffix = even->suffix = odd;
         odd->len = -1, even->len = 0;
-        n = 0, cnt = 0;
+        n = 0, cnt = 2;//root
     }
 
     Node* New_Node(int x) {
@@ -46,5 +46,5 @@ namespace PT{
             return 0;
         }
     }
-}
+};
 

@@ -1,22 +1,4 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
-#include <cmath>
-#include <ctime>
-#include <cassert>
-#include <climits>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
-#include <vector>
-#include <set>
-#include <map>
-#include <queue>
-#include <deque>
-#include <bitset>
-#include <algorithm>
+#include <bits/stdc++.h>
 
 #define LL long long
 #define REP(i, a) REPP(i, 0, (a) - 1)
@@ -40,11 +22,8 @@ LL Abs(LL x) {
 void update(Cof &a) {
     LL d = Abs(__gcd(a.first, a.second));
     a.first /= d, a.second /= d;
-    if (sgn(a.first) != sgn(a.second)) {
-        if(a.first > 0) a.first *= -1, a.second *= -1;
-    }
-    else if (sgn(a.first) == sgn(a.second)) {
-        if (a.first < 0) a.first *= -1, a.second *= -1;
+    if (sgn(a.second) < 0) {
+        a.first *= -1, a.second *= -1;
     }
 }
 
@@ -103,7 +82,7 @@ Pair Minus(const Pair &a, const Pair &b) {
     return ans;
 }
 
-Pair Mul(Pair &a, Pair &b) {
+Pair Mul(Pair a, Pair b) {
     Pair ans;
     if (isZero(a.first)) swap(a, b);
     ans.first = Mul(a.first, b.second);
@@ -135,6 +114,7 @@ const LL inf = LLONG_MAX;
 string str = "+-*/";
 vector<Pair> ans;
 Pair P1 = make_pair(make_pair(inf, inf), make_pair(1, 1)), P2 = make_pair(make_pair(inf, inf), make_pair(2, 2));
+vector<Pair> ban;
 
 void get(char *s) {
     while (*s) {
@@ -163,12 +143,13 @@ void get(char *s) {
                 }
                 else if (c == '-') {
                     Pair tmp = Mul(A, C);
-                    B = Minus(B, tmp);
+                    B = Minus(tmp, B);
                 }
                 else if (c == '*') {
                     B = Mul(A, B);
                 }
                 else {
+                    ban.push_back(C);
                     C = Mul(A, C);
                     swap(B, C);
                 }
@@ -206,6 +187,7 @@ void get(char *s) {
                     lhs = ::A;
                 }
                 if (tmp) {
+                    ban.push_back(rhs);
                     ans.push_back(::A), ans.push_back(::B);
                     ans.push_back(P2);
                 }
@@ -231,12 +213,26 @@ void get(char *s) {
 string r;
 char s[100];
 
+bool check(Cof ans) {
+    REP(i, ban.size()) {
+        Cof tmp = Mul(ans, ban[i].first);
+        tmp = Add(tmp, ban[i].second);
+        if (isZero(tmp)) return 0;
+    }
+    return 1;
+}
+
 int main() {
 #ifdef HOME
-    freopen("E.in", "r", stdin);
+    freopen("tmp.in", "r", stdin);
 #endif
+    freopen("equation.in", "r", stdin);
+    freopen("equation.out", "w", stdout);
+
 
     Cof A, B;
+    A = make_pair(0, -1);
+    update(A);
     //gets(s);
     getline(cin, r);
     REP(i, r.size()) {
@@ -264,7 +260,12 @@ int main() {
                 puts("NONE");
             }
             else {
-                printf("X = %lld/%lld\n", ans.first, ans.second);
+                if (check(ans)) {
+                    printf("X = %lld/%lld\n", ans.first, ans.second);
+                }
+                else {
+                    puts("NONE");
+                }
             }
         }
     }
@@ -280,7 +281,12 @@ int main() {
         else {
             B = Mul(B, make_pair(-1, 1));
             Cof ans = Div(B, A);
-            printf("X = %lld/%lld\n", ans.first, ans.second);
+            if (check(ans)) {
+                printf("X = %lld/%lld\n", ans.first, ans.second);
+            }
+            else {
+                puts("NONE");
+            }
         }
     }
     return 0;

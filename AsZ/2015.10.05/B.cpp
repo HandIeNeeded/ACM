@@ -12,6 +12,8 @@ int main() {
 #ifndef ONLINE_JUDGE
     freopen("B.in", "r", stdin);
 #endif
+    freopen("building.in", "r", stdin);
+    freopen("building.out", "w", stdout);
     int n;
     scanf("%d", &n);
     for (int i = 0; i < 26; ++i) {

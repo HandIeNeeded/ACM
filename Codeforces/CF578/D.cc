@@ -2,29 +2,29 @@
 
 #define LL long long
 #define REP(i, a) REPP(i, 0, (a) - 1)
-#define MST(a, b) memset(a, b, sizeof(a))
-#define REPP(i, a, b) for (int i = (int) (a); i <= (int) (b); ++i)
-#define debug(x) cout << #x << "is: " << x << endl
-
-#define FI first
-#define SE second
-#define VI vector<int>
-#define VP vector<PII>
-#define VS vector<string>
-#define PII pair<int, int>
-#define ALL(a) (a).begin(), (a).end()
-#define pb push_back
-#define make make_pair
-
-const int inf = 0x3f3f3f3f;
-const double eps = 1e-9;
+#define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
 
 using namespace std;
 
+const int MO = 1e9 + 7;
+const int N = 1e5 + 5;
+int dp[N][16];
+
 int main() {
-	ios :: sync_with_stdio(0);
+#ifdef HOME
+    freopen("in", "r", stdin);
+#endif
+
+    string s;
+    cin >> s;
+    int n = s.size();
+    s += '#';
 
 
-	return 0;
+
+
+
+
+    return 0;
 }
 
