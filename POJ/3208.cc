@@ -45,7 +45,7 @@ LL count(LL x) {
 
 int main() {
 #ifdef HOME
-    //freopen("in", "r", stdin);
+    freopen("in", "r", stdin);
 #endif
 
     pw[0] = 1;
