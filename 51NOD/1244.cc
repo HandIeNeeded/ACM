@@ -9,7 +9,7 @@ using namespace std;
 const int N = 1e5 + 5;
 
 int p[N], vis[N] = {0, 1}, tot;
-int mobius[N] = {0, 1};
+int mobius[N] = {0, 1}, M[N];
 
 void prime() {
     for (int i = 2; i < N; i++) {
@@ -31,11 +31,16 @@ int main() {
 #endif
 
     prime();
-    int sum = 0, ans = 0;
-    REPP(i, 2, N - 1) {
-        sum += mobius[i];
-        cout << i << ' ' << mobius[i] << ' ' << sum << endl;
-        ans = max(ans, abs(sum));
+    REPP(i, 1, 30) {
+        M[i] = M[i - 1] + mobius[i];
+        cout << i << ' ' << mobius[i] << ' ' << M[i] << endl;
+    }
+    REPP(i, 1, 20) {
+        int ans = 0;
+        REPP(j, 1, i) {
+            ans += M[i / j];
+        }
+        cout << i << ' ' << ans << endl;
     }
     return 0;
 }
