@@ -13,6 +13,7 @@ LL area = 0;
 
 LL get(int i, int j) {
     int w = abs(a[i] - a[j]), h = abs(b[i] - b[j]);
+    area -= 1LL * w * h;
     return __gcd(w, h);
 }
 
@@ -27,12 +28,13 @@ int main() {
         REP(i, 3) {
             cin >> a[i] >> b[i];
         }
+        int L = inf, R = -inf, up = inf, down = -inf;
         area = 0;
-        REP(i, 3) {
-            int j = (i + 1) % 3;
-            area += 1LL * a[i] * b[j] - 1LL * a[j] * b[i];
-        }
-        area = abs(area);
+        REP(i, 3) L = min(L, a[i]);
+        REP(i, 3) R = max(R, a[i]);
+        REP(i, 3) up = min(up, b[i]);
+        REP(i, 3) down = max(down, b[i]);
+        area = 2LL * (R - L) * (down - up);
         area += 2;
         LL cnt = 0;
         cnt = get(0, 1) + get(1, 2) + get(2, 0);
