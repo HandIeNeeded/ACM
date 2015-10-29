@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+
+#define REP(i, a) for (int i = 0; i < (int) (a); i ++)
+#define REPP(i, a, b) for (int i = (int) (a); i <= (int) (b); i ++)
+#define MST(a, b) memset(a, b, sizeof(a))
+
+using namespace std;
+
+int random(int x)
+{
+	return rand() % x;
+}
+int main() {
+	ios :: sync_with_stdio(0);
+	srand(time(0) % clock());
+	freopen("D.in", "w", stdout);
+    int n = 30000;
+    cout << n << endl;
+	REPP(i, 1, n)
+	{
+        int x = rand() % (i + 10000), y = rand() % (i + 10000);
+        cout << "AB"[rand() & 1] << ' '  << x << ' ' << y << endl;
+	}
+	return 0;
+}

@@ -1,0 +1,225 @@
+\documentclass{article}
+\usepackage{xeCJK}
+\usepackage{minitoc}
+\usepackage{fontspec}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{color}
+\setCJKmainfont{Microsoft YaHei Mono}
+\newfontfamily\Monaco{Monaco}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\usepackage[colorlinks,linkcolor=black,urlcolor=mygreen]{hyperref}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\small\Monaco,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  %frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=C++,                 % the language of the code
+  otherkeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\Monaco, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=4, 	                   % sets default tabsize to 2 spaces
+}
+
+\newcommand{\includecode}[2][c]{\lstinputlisting[caption=#2, escapechar=, language=#1]{#2}}
+
+\begin{document} 
+\begin{flushleft}
+
+\title{SGU 320-359 Report}
+\author{AsZ yuzhou627}
+\date{\today}
+\maketitle
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+
+\section{概述}
+这是USTC-ACM 2015暑假训练题目的题解总结,题目选自SGU320-359.SGU的题目是毛子题,往往考验智商,大部分都不(划掉)简单.有些题目值得想上几天.这也是我大学最后一个为$acm$,为$Final$奋斗的暑假,准备把这件事好好做好,也可以留下些东西给后辈.我校一直缺少传承.我就稍微做个不合格的范例吧.不知道后来人有没有能做得再好些的.加油吧各位.
+
+\begin{center}
+\includegraphics[width = 0.6\textwidth]{mio}
+\end{center}
+
+\section{SGU321}
+$N$个点的有根树，边有黑白两色，将最少的黑边改成白边，使得从根到任意点的路径上，白边的数量不少于黑边。($N \leq 200000$)\\
+
+\subsection{Solution}
+贪心是显然的,尽量取靠近根的边变色.
+\begin{enumerate}
+\item 线段树,dfs走到一条可以变色的边,询问子树里面有没有不合法的,有就变色,然后更新子树.$O(N\log{N})$\\
+
+\item deque直接搞,dfs走完所以顶点,用一个全局的deque记录从根到目前节点,所有可以被染色的边,然后节点不合法就变色,并把deque维护一下.$O(N)$ by ftiasch.\\
+\end{enumerate}
+
+\subsection{Code}
+\includecode[C++]{321v1.cc}
+\includecode[C++]{321v2.cc}
+
+\section{SGU322}
+给两棵树,你可以对任意对树进行做加边删边操作,问最小多少步,可以使两棵树长的完全一样.($N \leq 2000$)\\
+\subsection{Solution}
+首先,动两棵树是没有意义的.因为$|A \rightarrow T| + |B \rightarrow T| >= |A \rightarrow B|$.操作是可逆的,既然可以把$B$变成$T$,那么就能把$A$变成$T$再变成$B$.代价不会更差.所以直接把$A$变成$B$.$dfs$找环即可.$O(N^2)$.
+\subsection{Code}
+\includecode[C++]{322.cc}
+
+\section{SGU324}
+按要求模拟.
+\subsection{Solution}
+学会使用string类,使用istringstream等,会让代码变得简单.另外锻炼思维严密性.
+感觉这种题,我喜欢先把串变得很规整(单词以一个空格间隔,或者把所有单词放到vector里),然后慢慢处理.感觉写的并不是很好.
+注意以下用例:
+\includecode[C++]{324in}
+\subsection{Code}
+\includecode[C++]{324.cc}
+
+\section{SGU325}
+求把一个字符串$swap$成回文的做最小步数.($N \leq 1000000$)
+\subsection{Solution}
+解法有两个.
+\begin{enumerate}
+\item $O(N)$
+
+\item $O(N\log{N})$
+\end{enumerate}
+\subsection{Code}
+\includecode[C++]{325.cc}
+
+\section{SGU326}
+$NBA$某小组内有$N$支球队,小组内以及小组间已经进行了若干场比赛。现在给出$N$支球队目前胜利的场数,还剩多少场没有比(包括小组内和小组间)以及小组内任意两支球队之间还剩多少场没有比,问能否合理安排剩下的所有比赛,使得球队$1$最后胜利的场数至少和小组内任何一支其他球队一样.($N \leq 20$)
+\subsection{Solution}
+所有和球队$1$相关的比赛全让球队$1$赢,如果此时仍有某支球队胜利的场数大于球队$1$,则已经不可能满足要求.按如下方法建图:所有小组内的比赛$i$(不包括与球队$1$相关的比赛)作为一个点并加边$(s, i,num[i])$,每支球队(不包括球队$1$)作为一个点并加边$(j, t, wins[1]-wins[i])$,每场比赛向与其关联的两支球队$u,\ v$连边$(i, u, \infty), (i, v, \infty)$.至于其他球队小组间的比赛,直接让他们输掉就好,不用管.若最大流等于$\sum num[i]$则可以满足要求.
+\subsection{Code}
+\includecode[C++]{326.cc}
+
+\section{SGU328}
+长为$n$的串,有些被染成黑白,A,B轮流染未染色的,相邻不能相同.($N \leq 100000$)\\
+\subsection{Solution}
+SG博弈,直接打表找规律,这里的问题有三类:
+\begin{enumerate}
+\item 左右都被然过的一段区间的SG $sg = left\ xor\ right\ xor\ 1$
+\item 有一个端是在原串的边界,没有被染色的区间的SG $sg = length$
+\item 两端都没有被染色的区间的SG $odd\ 1\ even\ 0$
+\end{enumerate}
+\subsection{Code}
+\includecode[C++]{328.cc}
+
+\section{SGU330}
+给定$A$,$B$,每次只能加当前数字的某个真约数(大于1),在500步内把$A$变到$B$.
+\subsection{Solution}
+先随便尝试一下:因为我们希望尽量快(500步的限制), 所以会像下面这样, $10 \rightarrow 15 \rightarrow 20 \rightarrow 30 \rightarrow \dots 100 \rightarrow \dots 1000 \rightarrow \dots 10000 \rightarrow \dots$\\
+大概就得到一个$\log$级别的解.我们审视一下前面随便写的一个东西,好像是10进制,然后尽量变大,那么我们取其他进制也是$\log$的,那么我们取什么好呢?显然是2进制,因为,我们希望有解的一定不能漏掉.(自己体会一下).
+\subsection{Code}
+\includecode[C++]{330.cc}
+
+\section{SGU337}
+长度为$N$的循环串,让你选出最长的字典序最小的子串,使得他两半差异不超过$K$.
+\subsection{Solution}
+这题告诉我们容错匹配是存在naive的$O(N^2)$的算法的.直接做dp就好了.从后往前倒着推.记录失配的位置和个数.
+\subsection{Code}
+\includecode[C++]{337.cc}
+
+\section{SGU339}
+$250000$操作,加区间,减区间(不存在就跳过此操作),每次加区间的时候回答,现在有多少还存在的区间被包含在要加的区间内部(边界可以重合).保证任何时刻存在的区间不会超过$1000$.
+
+\subsection{Solution}
+这题我傻逼了,既然同时最多1000个区间,那么直接暴力for好了,复杂度$O(250000 * 1000)$,可以过,然后我并没有想到,看了叉姐代码之后泪奔了,我的做法没有考虑到1000这个条件也可以做.直接上树套树,实际上是树状数组套treap.我们把左端点的值种在位置在右端点的treap上,然后删除就是直接删,询问就是问区间[l,r]间的treap上有多少点是大于等于l的.嗯,我是傻逼.写了180行.$O(N\log{N}\log{N})$
+\subsection{Code}
+\includecode[C++]{339v1.cc}
+\includecode[C++]{339v2.cc}
+
+\section{SGU340}
+模拟题.
+\subsection{Solution}
+我会告诉你这题,变量可以是$vim$这样的?就是不一定是一个字母表示一个变量.这题直接用栈.
+\subsection{Code}
+\includecode[C++]{340.cc}
+
+
+\section{SGU344}
+一个各自如果与两个$X$相邻,就会变成$X$.问最后$X$的个数.
+\subsection{Solution}
+$bfs$,话说我发现了逗比之星抄袭的题目来源呢.$O(N^2)$.每个$X$,或者变成$X$的点进队去更新别的格子.容易知道复杂度是对的,而且所有应该是$X$的点都会被更新到.
+\subsection{Code}
+\includecode[C++]{344.cc}
+
+\section{SGU346}
+模拟.
+\subsection{Solution}
+水题这么多有些不能忍.就当锻炼手速和耐心,细心了.
+\subsection{Code}
+\includecode[C++]{346.cc}
+
+\section{SGU347}
+$n$个字符串,求链接之后字典序最小.应该是最简单的题了.
+\subsection{Solution}
+直接按字典序排序是错的,应该是按$a+b<b+a$这样的比较函数排序.
+\subsection{Code}
+\includecode[C++]{347.cc}
+
+\section{SGU350}
+$B$由$A$中两个不同元素抑或得到,现在给定$B$,求一个合法的$A$.($M \leq 100$),$A$保证不存在两个或以上元素抑或之后是0.
+\subsection{Solution}
+显然我们可以通过只选$B$中的数和另外一个数就构造出$A$.就是让你找一个大小是$n-1$的团.然后搭配一个$x$即可,注意这里$x$只能是0.因为题目要求了$A$有特殊性.如果取其他,你都是可能得到一个能产生$B$但是不满足条件的$A$.
+\subsection{Code}
+\includecode[C++]{350.cc}
+
+\section{SGU353}
+模拟.
+\subsection{Solution}
+技巧:${a/b + (a\ mod\ b > 0) = (a + b - 1) / b}$
+\subsection{Code}
+\includecode[C++]{353.cc}
+
+\section{SGU355}
+给$1 \rightarrow n$染色,保证成倍数关系的数字不能同色.
+\subsection{Solution}
+额,观察一下,发现$2,4,8,16,\dots$两两不能同色.提示我们直接按因子个数染色.那么染成相同颜色的数,一定不能整除.因为至少有一个质因此不一样.满足要求.你会线性筛预处理因此个数么? $O(N)$
+\subsection{Code}
+\includecode[C++]{355.cc}
+
+\section{SGU357}
+模拟,最短路.
+\subsection{Solution}
+$spfa$.
+\subsection{Code}
+\includecode[C++]{357.cc}
+
+\section{SGU358}
+模拟.
+\subsection{Solution}
+最水的题原来是这个.
+\subsection{Code}
+\includecode[C++]{358.cc}
+
+\section{SGU359}
+
+\subsection{Solution}
+
+\subsection{Code}
+
+\section{总结}
+总结一下目前做到的一些好题:$321,326,330,337,339,340,350$.
+
+
+\end{flushleft}
+\end{document} 
