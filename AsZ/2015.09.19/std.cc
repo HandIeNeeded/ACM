@@ -1,117 +1,149 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+
 using namespace std;
-typedef long long LL;
-typedef pair<int, int> PII;
+const int maxn = 400005;
+typedef long long ll;
+#define lson(x) ((x)<<1)
+#define rson(x) (((x)<<1)|1)
 
-const int MAXN = 10000 + 10, inf = 1e9;
-int go[MAXN][2], val[MAXN][2], a[MAXN];
-int st[MAXN], ed[MAXN];
-int n, m, sz;
+struct SegTree {
+    int lc[maxn<<2], rc[maxn<<2];
+    ll S[maxn<<2], L[maxn<<2], R[maxn<<2], T[maxn<<2];
 
-int newNode() {
-  go[sz][0] = go[sz][1] = -1;
-  val[sz][0] = val[sz][1] = inf;
-  return sz ++;
-}
+    int length(int u) {
+        return rc[u] - lc[u] + 1;
+    }
 
-namespace NF {
-  const int MAXN=100000,MAXM=100000;
-  struct Edge {
-    int v,c,f,nx;//c:capcity, f:flow
-    Edge() {}
-    Edge(int v,int c,int f,int nx):v(v),c(c),f(f),nx(nx) {}
-  } E[MAXM];
-  int G[MAXN],cur[MAXN],pre[MAXN],dis[MAXN],gap[MAXN],N,sz;
-  void init(int _n) {
-    N=_n,sz=0; memset(G,-1,sizeof(G[0])*N);
-  }
-  void link(int u,int v,int c) {
-    E[sz]=Edge(v,c,0,G[u]); G[u]=sz++;
-    E[sz]=Edge(u,0,0,G[v]); G[v]=sz++;
-  }
-  bool bfs(int S,int T) {
-    static int Q[MAXN]; memset(dis,-1,sizeof(dis[0])*N);
-    dis[S]=0; Q[0]=S;
-    for (int h=0,t=1,u,v,it;h<t;++h) {
-      for (u=Q[h],it=G[u];~it;it=E[it].nx) {
-        if (dis[v=E[it].v]==-1&&E[it].c>E[it].f) {
-          dis[v]=dis[u]+1; Q[t++]=v;
+    void maintain(int u, ll a) {
+        T[u] += a;
+        S[u] += a * length(u);
+        ll add = a * (length(u) + 1) * length(u) / 2;
+        L[u] += add;
+        R[u] += add;
+    }
+
+    void pushup(int u) {
+        S[u] = S[lson(u)] + S[rson(u)];
+        L[u] = L[lson(u)] + L[rson(u)] + S[rson(u)] * length(lson(u));
+        R[u] = R[rson(u)] + R[lson(u)] + S[lson(u)] * length(rson(u));
+    }
+
+    void pushdown(int u) {
+        if (T[u]) {
+            maintain(lson(u), T[u]);
+            maintain(rson(u), T[u]);
+            T[u] = 0;
         }
-      }
     }
-    return dis[T]!=-1;
-  }
-  int dfs(int u,int T,int low) {
-    if (u==T) return low;
-    int ret=0,tmp,v;
-    for (int &it=cur[u];~it&&ret<low;it=E[it].nx) {
-      if (dis[v=E[it].v]==dis[u]+1&&E[it].c>E[it].f) {
-        if (tmp=dfs(v,T,min(low-ret,E[it].c-E[it].f))) {
-          ret+=tmp; E[it].f+=tmp; E[it^1].f-=tmp;
+
+    void build (int u, int l, int r) {
+        lc[u] = l, rc[u] = r;
+        S[u] = L[u] = R[u] = T[u] = 0;
+
+        if (l == r) return;
+
+        int mid = (l+r)>>1;
+        build (lson(u), l, mid);
+        build (rson(u), mid+1, r);
+        pushup(u);
+    }
+
+    void modify(int u, int l, int r, int v) {
+        if (l <= lc[u] && rc[u] <= r) {
+            maintain(u, v);
+            return;
         }
-      }
-    }
-    if (!ret) dis[u]=-1; return ret;
-  }
-  int dinic(int S,int T) {
-    int maxflow=0,tmp;
-    while (bfs(S,T)) {
-      memcpy(cur,G,sizeof(G[0])*N);
-      while (tmp=dfs(S,T,inf)) maxflow+=tmp;
-      if (maxflow >= inf) return -1;
-    }
-    return maxflow;
-  }
-}
 
-void dfs(int u, int d) {
-  if (u == -1) return;
-  for (int o = 0; o < 2; ++ o) if (go[u][o] != -1) {
-    if (d > 0) NF::link(u, go[u][o], val[u][o]);
-    else NF::link(go[u][o], u, val[u][o]);
-    dfs(go[u][o], d);
-  }
-}
+        pushdown(u);
+        int mid = (lc[u] + rc[u]) >> 1;
+        if (l <= mid) modify(lson(u), l, r, v);
+        if (r > mid) modify(rson(u), l, r, v);
+        pushup(u);
+    }
 
-int main() {
-  int ncas; scanf("%d", &ncas);
-  for (int cas = 1; cas <= ncas; ++ cas) {
-    scanf("%d%d", &n, &m); sz = 0;
-    int S = newNode(), T = newNode();
-    for (int i = 0; i < n; ++ i) {
-      int x; scanf("%d", &x);
-      int &p = ed[i]; p = T;
-      for (int j = 0; j < 8; ++ j) {
-        int o = x >> j & 1;
-        if (go[p][o] == -1) go[p][o] = newNode();
-        p = go[p][o];
-      }
-      int &q = st[i]; q = S;
-      for (int j = 7; j >= 0; -- j) {
-        int o = x >> j & 1;
-        if (go[q][o] == -1) go[q][o] = newNode();
-        q = go[q][o];
-      }
+    ll query(int u, int l, int r) {
+        if (l <= lc[u] && rc[u] <= r)
+            return S[u];
+
+        pushdown(u);
+        int mid = (lc[u] + rc[u]) >> 1;
+        ll ret = 0;
+        if (l <= mid) ret += query(lson(u), l, r);
+        if (r > mid) ret += query(rson(u), l, r);
+        pushup(u);
+        return ret;
     }
-    for (int i = 0, w, p; i < m; ++ i) {
-      char op[100], s[100];
-      scanf("%s%s%d", op, s, &w);
-      int len = strlen(s);
-      if (op[0] == 'S') p = T, reverse(s, s + len);
-      else p = S;
-      for (int j = 0; s[j]; ++ j) {
-        int o = s[j] - '0';
-        if (p == -1) break;
-        if (!s[j + 1]) val[p][o] = min(val[p][o], w);
-        p = go[p][o];
-      }
+
+    ll queryLeft(int u, int l, int r) {
+        if (l <= lc[u] && rc[u] <= r)
+            return L[u] + S[u] * (lc[u] - l);
+
+        pushdown(u);
+        int mid = (lc[u] + rc[u]) >> 1;
+        ll ret = 0;
+        if (l <= mid) ret += queryLeft(lson(u), l, r);
+        if (r > mid) ret += queryLeft(rson(u), l, r);
+        pushup(u);
+        return ret;
     }
-    NF::init(sz);
-    for (int i = 0; i < n; ++ i) {
-      NF::link(st[i], ed[i], inf);
+
+    ll queryRight(int u, int l, int r) {
+        if (l <= lc[u] && rc[u] <= r)
+            return R[u] + S[u] * (r - rc[u]);
+
+        pushdown(u);
+        int mid = (lc[u] + rc[u]) >> 1;
+        ll ret = 0;
+        if (l <= mid) ret += queryRight(lson(u), l, r);
+        if (r > mid) ret += queryRight(rson(u), l, r);
+        pushup(u);
+        return ret;
     }
-    dfs(S, 1); dfs(T, -1);
-    printf("Case #%d: %d\n", cas, NF::dinic(S, T));
-  }
-  return 0;
+}A, D;
+
+int N, M;
+
+int main () {
+    int cas;
+    scanf("%d", &cas);
+    for (int kcas = 1; kcas <= cas; kcas++) {
+        scanf("%d%d", &N, &M);
+        A.build(1, 2, 2 * N);
+        D.build(1, 1, 2 * N - 1);
+//      A.build(1, 1, 2 * N);
+//      D.build(1, 1, 2 * N);
+
+        printf("Case #%d:\n", kcas);
+
+        int t, l, r, x1, y1, x2, y2;
+        while (M--) {
+            scanf("%d", &t);
+            if (t == 1) {
+                scanf("%d%d", &l, &r);
+                A.modify(1, l, r, 1);
+            } else if (t == 2) {
+                scanf("%d%d", &l, &r);
+                D.modify(1, l + N, r + N, 1);
+            } else {
+                scanf("%d%d%d%d", &x1, &x2, &y1, &y2);
+                ll ans = 0, t = min(x2-x1, y2-y1) + 1;;
+
+                l = x2 + y1, r = x1 + y2;
+                if (l > r) swap(l, r);
+                ans += A.query(1, l, r) * t;
+                ans += A.queryLeft(1, x1+y1, l-1);
+                ans += A.queryRight(1, r+1, x2+y2);
+
+                l = x1-y1+N, r = x2-y2+N;
+                if (l > r) swap(l, r);
+                ans += D.query(1, l, r) * t;
+                ans += D.queryLeft(1, x1-y2+N, l-1);
+                ans += D.queryRight(1, r+1, x2-y1+N);
+                printf("%lld\n", ans);
+            }
+        }
+    }
+    return 0;
 }

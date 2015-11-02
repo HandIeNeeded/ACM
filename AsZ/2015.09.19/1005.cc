@@ -79,53 +79,24 @@ Unit query(int x, int l, int r, int id) {
     }
 }
 
-int in() {
-    char c;
-    while (c = getchar(), (c < '0' || c > '9') && (c != '-'));
-    bool flag = (c == '-');
-    if (flag) c = getchar();
-    int x = 0;
-    while (c >= '0' && c <= '9') {
-        x = x * 10 + c - 48;
-        c = getchar();
-    }
-    return flag ? -x : x;
-}
-
-void out(LL x) { //int
-    if (x < 0) putchar('-'), x = -x;
-    int len = 0, bit[20]; // LL  -> bit[20]
-    while (x) {
-        bit[len++] = x % 10;
-        x /= 10;
-    }
-    if (!len) bit[len++] = 0;
-    while (len--) putchar(bit[len] + 48);
-    putchar('\n');
-}
-
 int main() {
 #ifdef HOME
-    //freopen("in", "r", stdin);
+    freopen("in", "r", stdin);
 #endif
 
     int t, ca = 1;
-    //scanf("%d", &t);
-    t = in();
+    scanf("%d", &t);
     while (t--) {
         int n, m;
-        //scanf("%d%d", &n, &m);
-        n = in(), m = in();
+        scanf("%d%d", &n, &m);
         printf("Case #%d:\n", ca++);
         int tot = n << 1;
         build(1, 1, tot);
         while (m--) {
             int type, l, r;
-            //scanf("%d", &type);
-            type = in();
+            scanf("%d", &type);
             if (type <= 2) {
-                //scanf("%d%d", &l, &r);
-                l = in(), r = in();
+                scanf("%d%d", &l, &r);
                 if (type == 1) {
                     ql = l, qr = r;
                     update(1, 1, tot, 0);
@@ -137,8 +108,7 @@ int main() {
             }
             else {
                 int x1, x2, y1, y2;
-                //scanf("%d%d%d%d", &x1, &x2, &y1, &y2);
-                x1 = in(), x2 = in(), y1 = in(), y2 = in();
+                scanf("%d%d%d%d", &x1, &x2, &y1, &y2);
                 int H = x2 - x1, W = y2 - y1;
                 LL ans = 0;
                 if (H >= W) {
@@ -203,8 +173,7 @@ int main() {
                         ans += query(1, 1, tot, 1).sum * (H + 1);
                     }
                 }
-                //printf("%lld\n", ans);
-                out(ans);
+                printf("%lld\n", ans);
             }
         }
     }
