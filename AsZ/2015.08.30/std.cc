@@ -1,138 +1,148 @@
-#include <bits/stdc++.h>
-
-#define Long long long
-#define REP(i, a) REPP(i, 0, (a) - 1)
-#define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
-#define MST(a, b) memset(a, b, sizeof(a))
-#define L (x << 1)
-#define R (x << 1 | 1)
-#define MID ((l + r) >> 1)
-#define LC L, l, MID
-#define RC R, MID + 1, r
-
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <vector>
+#include <queue>
+#define clr(a, x) memset(a, x, sizeof a)
 using namespace std;
 
-const int N = 1e5 + 5;
-int ql, qr, qd;
-int a[N];
-Long sum[N << 2], flag[N << 2];
+const int maxn=620;
+const int oo=0x3f3f3f3f;
+struct Edge
+{
+    int u, v, cap, flow, cost, nxt;
+    Edge(int u, int v, int c, int f, int co, int nxt):u(u), v(v), cap(c), flow(f), cost(co), nxt(nxt) {}
+    Edge() {}
+};
+struct MCMF
+{
+    int n, m, s, t;
+    Edge edge[maxn*maxn+maxn];
+    int head[maxn], tot;
+    int inq[maxn], d[maxn], p[maxn], a[maxn];
+    void init(int _n)
+    {
+        n=_n;
+        tot=0;
+        clr(head, -1);
+    }
+    void add(int u, int v, int cap, int cost)
+    {
+        edge[tot]=Edge(u, v, cap, 0, cost, head[u]);
+        head[u]=tot++;
+        edge[tot]=Edge(v, u, 0, 0, -cost, head[v]);
+        head[v]=tot++;
+    }
+    bool spfa(int s, int t, int& flow, int& cost)
+    {
+        clr(d, 0x3f);
+        clr(inq, 0);
+        d[s]=0, inq[s]=1, p[s]=0, a[s]=oo;
 
-void build(int x, int l, int r) {
-    if (l == r) {
-        sum[x] = flag[x] = 0;
+        queue<int> q;
+        q.push(s);
+        while(!q.empty())
+        {
+            int u=q.front();
+            q.pop();
+            inq[u]=0;
+            for(int i=head[u]; ~i; i=edge[i].nxt)
+            {
+                Edge& e=edge[i];
+                if(e.cap>e.flow && d[e.v]>d[u]+e.cost)
+                {
+                    d[e.v]=d[u]+e.cost;
+                    p[e.v]=i;
+                    a[e.v]=min(a[u], e.cap-e.flow);
+                    if(!inq[e.v])
+                    {
+                        q.push(e.v);
+                        inq[e.v]=1;
+                    }
+                }
+            }
+        }
+        if(d[t]==oo)return false;
+        flow+=a[t];
+        cost+=a[t]*d[t];
+        int u=t;
+        while(u!=s)
+        {
+            edge[p[u]].flow+=a[t];
+            edge[p[u]^1].flow-=a[t];
+            u=edge[p[u]].u;
+        }
+        return true;
     }
-    else {
-        build(LC), build(RC);
-        sum[x] = flag[x] = 0;
-    }
-}
-
-void push(int x, int l, int r) {
-    sum[L] += 1LL * flag[x] * (MID - l + 1);
-    sum[R] += 1LL * flag[x] * (r - MID);
-    flag[L] += flag[x], flag[R] += flag[x];
-    flag[x] = 0;
-}
-
-void update(int x, int l, int r) {
-    if (ql <= l && qr >= r) {
-        sum[x] += 1LL * (r - l + 1) * qd;
-        flag[x] += qd;
-    }
-    else {
-        if (flag[x]) push(x, l, r);
-        if (ql <= MID) update(LC);
-        if (qr > MID) update(RC);
-        sum[x] = sum[L] + sum[R];
-    }
-}
-
-Long query(int x, int l, int r) {
-    if (ql <= l && qr >= r) {
-        return sum[x];
-    }
-    else {
-        if (flag[x]) push(x, l, r);
-        Long ans = 0;
-        if (ql <= MID) ans += query(LC);
-        if (qr > MID) ans += query(RC);
+    int MinCost(int s, int t)
+    {
+        int flow=0, cost=0;
+        int ans=0;
+        while(spfa(s, t, flow, cost) && cost<ans)
+            ans=cost;
         return ans;
     }
-}
+} net;
 
-void unique(deque<pair<int, int> > &a) {
-    deque<pair<int, int> > tmp;
-    REP(i, a.size()) {
-        if (i == 0) tmp.push_back(a[i]);
-        else if (a[i].first == a[i - 1].first) {
-            tmp.back().second = a[i].second;
+int tuner[maxn], lev[maxn], atk[maxn];
+int val[maxn][maxn];
+
+int main()
+{
+    int T;
+    scanf("%d", &T);
+    while(T--)
+    {
+        int n, m, s, t, ans=0;
+        scanf("%d%d", &n, &m);
+        net.init(n+m+10);
+        s=0, t=n+1;
+        for(int i=1; i<=n; i++)
+        {
+            scanf("%d%d%d", tuner+i, lev+i, atk+i);
+            if(tuner[i])net.add(s, i, 1, 0);
+            else net.add(i, t, 1, 0);
+            ans+=atk[i];
         }
-        else {
-            tmp.push_back(a[i]);
+        clr(val, 0);
+        for(int k=1; k<=m; k++)
+        {
+            int l, a, r;
+            scanf("%d%d%d", &l, &a, &r);
+            if(r==0)
+            {
+                for(int i=1; i<=n; i++)if(tuner[i])
+                        for(int j=1; j<=n; j++)if(!tuner[j])
+                                if(lev[i]+lev[j]==l && atk[j]+atk[i]<a)
+                                    val[i][j]=min(val[i][j], atk[i]+atk[j]-a);
+            }
+            else if(r==1)
+            {
+                int x;
+                scanf("%d", &x);
+                for(int i=1; i<=n; i++)
+                    if(tuner[x]!=tuner[i] && lev[i]+lev[x]==l && atk[x]+atk[i]<a)
+                    {
+                        if(tuner[x])
+                            val[x][i]=min(val[x][i], atk[x]+atk[i]-a);
+                        else val[i][x]=min(val[i][x], atk[i]+atk[x]-a);
+                    }
+            }
+            else
+            {
+                int x, y;
+                scanf("%d%d", &x, &y);
+                if(atk[x]+atk[y]>=a)continue ;
+                if(tuner[x])
+                    val[x][y]=min(val[x][y], atk[x]+atk[y]-a);
+                else val[y][x]=min(val[y][x], atk[y]+atk[x]-a);
+            }
         }
+        for(int i=1; i<=n; i++)
+            for(int j=1; j<=n; j++)
+                if(val[i][j]<0)
+                    net.add(i, j, 1, val[i][j]);
+        printf("%d\n", ans-net.MinCost(s, t));
     }
-    a = tmp;
-}
-
-int LL[N], RR[N]; 
-int tmp[N];
-Long ans[N];
-
-bool cmp(int i, int j) {
-    return RR[i] < RR[j];
-}
-
-int main() {
-#ifdef HOME
-    //freopen("B.in", "r", stdin);
-#endif
-#ifdef ONLINE_JUDGE
-#define lld I64d
-#endif
-
-    int t;
-    scanf("%d", &t);
-    while (t--) {
-        int n;
-        scanf("%d", &n);
-        REPP(i, 1, n) scanf("%d", a + i);
-        deque<pair<int, int> > g;
-        int m;
-        scanf("%d", &m);
-        REPP(i, 1, m) tmp[i] = i;
-        REPP(i, 1, m) {
-            scanf("%d%d", LL + i, RR + i);
-        }
-        sort(tmp + 1, tmp + m + 1, cmp);
-        int now = 1;
-        build(1, 1, n);
-        REPP(i, 1, n) {
-            g.push_front({a[i], i});
-            for (auto &p: g) {
-                p = {__gcd(p.first, a[i]), p.second};
-            }
-            unique(g);
-            //for (auto &p: g) {
-            //    cout << p.first << ' ' << p.second << endl;
-            //}
-            //cout << "**********" << endl;
-            int pre = i;
-            REP(i, g.size()) {
-                ql = g[i].second, qr = pre, qd = g[i].first;
-                update(1, 1, n);
-                pre = g[i].second - 1;
-            }
-            while (now <= m && RR[tmp[now]] == i) {
-                ql = LL[tmp[now]], qr = RR[tmp[now]];
-                ans[tmp[now]] = query(1, 1, n);
-                now++;
-            }
-        }
-        REPP(i, 1, m) {
-            printf("%lld\n", ans[i]);
-        }
-    }
-
     return 0;
 }
-

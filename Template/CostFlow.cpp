@@ -1,10 +1,10 @@
 const int N = 100005;
 const int M = 100005;
-const int INF = 0x3f3f3f3f;
+const int inf = 0x3f3f3f3f;
 
 struct MinCostFlow{
     int pre[N], dp[N];
-    int fi[N], ne[M << 2], en[M << 2], cap[M << 2], cost[M << 2], edge;
+    int fi[N], ne[M << 1], en[M << 1], cap[M << 1], cost[M << 1], edge;
     bool vis[N];
     int source, sink;
 
@@ -42,13 +42,13 @@ struct MinCostFlow{
             }
             vis[x] = 0;
         }
-        return dp[sink] != INF;
+        return dp[sink] != inf;
     }
 
-    pair<int, int> mincost() {
+    pair<int, int> minCost() {
         int cost = 0, flow = 0;
         while (spfa()) {
-            int tmp = INF;
+            int tmp = inf;
             for (int go = pre[sink]; go; go = pre[en[go ^ 1]]) {
                 tmp = min(tmp, cap[go]);
             }
@@ -59,6 +59,6 @@ struct MinCostFlow{
             cost += tmp * dp[sink];
             flow += tmp;
         }
-        return make_pair(cost, flow);
+        return {cost, flow};
     }
 }flow;
