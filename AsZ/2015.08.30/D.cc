@@ -8,17 +8,20 @@
 using namespace std;
 
 const int N = 505;
-const int M = 20005;
+const int M = 100005;
 const int inf = 0x3f3f3f3f;
 
 int type[N], level[N], atk[N];
+int mp[N][N];
 vector<int> id[2][13];
 
+void update(int &x, int y) {
+    if (x < y) x = y;
+}
+
 struct MinCostFlow{
-    int pre[N], dp[N];
+    int pre[N], dp[N], vis[N], source, sink;
     int fi[N], ne[M << 1], en[M << 1], cap[M << 1], cost[M << 1], edge;
-    bool vis[N];
-    int source, sink;
 
     void init(int S, int T) {
         source = S, sink = T;
@@ -35,7 +38,7 @@ struct MinCostFlow{
     }
 
     bool spfa() {
-        MST(dp, -1);
+        MST(dp, 0x3f);
         queue<int> q;
         q.push(source), vis[source] = 1, dp[source] = pre[source] = 0;
 
@@ -43,7 +46,7 @@ struct MinCostFlow{
             int x = q.front(); q.pop();
             for (int go = fi[x]; go; go = ne[go]) if (cap[go] > 0) {
                 int y = en[go];
-                if (dp[y] < dp[x] + cost[go]) {
+                if (dp[y] > dp[x] + cost[go]) {
                     dp[y] = dp[x] + cost[go];
                     pre[y] = go;
                     if (!vis[y]) {
@@ -54,22 +57,18 @@ struct MinCostFlow{
             }
             vis[x] = 0;
         }
-        return dp[sink] != -1;
+        return dp[sink] != inf;
     }
 
     pair<int, int> minCost() {
         int cost = 0, flow = 0;
         while (spfa()) {
-            int tmp = inf;
+            if (dp[sink] >= 0) break;
             for (int go = pre[sink]; go; go = pre[en[go ^ 1]]) {
-                tmp = min(tmp, cap[go]);
+                cap[go]--, cap[go ^ 1]++;
             }
-            for (int go = pre[sink]; go; go = pre[en[go ^ 1]]) {
-                cap[go] -= tmp;
-                cap[go ^ 1] += tmp;
-            }
-            cost += tmp * dp[sink];
-            flow += tmp;
+            cost += dp[sink];
+            flow++;
         }
         return {cost, flow};
     }
@@ -77,7 +76,7 @@ struct MinCostFlow{
 
 int main() {
 #ifdef HOME
-    freopen("D.in", "r", stdin);
+    freopen("tmp.in", "r", stdin);
 #endif
     int t;
     scanf("%d", &t);
@@ -94,6 +93,7 @@ int main() {
             else flow.add(i, n + 1, 1, 0);
             tot += atk[i];
         }
+        MST(mp, 0);
         REPP(i, 1, m) {
             int x, y, z;
             scanf("%d%d%d", &x, &y, &z);
@@ -104,7 +104,7 @@ int main() {
                         REP(k, id[1][b].size()) {
                             int p = id[0][a][j], q = id[1][b][k];
                             if (y - atk[p] - atk[q] > 0) {
-                                flow.add(q, p, inf, y - atk[p] - atk[q]);
+                                update(mp[q][p], y - atk[p] - atk[q]);
                             }
                         }
                     }
@@ -119,10 +119,10 @@ int main() {
                     v = id[ty][b][j];
                     if (y - atk[v] - atk[u] > 0) {
                         if (ty == 1) {
-                            flow.add(v, u, inf, y - atk[v] - atk[u]);
+                            update(mp[v][u], y - atk[v] - atk[u]);
                         }
                         else {
-                            flow.add(u, v, inf, y - atk[v] - atk[u]);
+                            update(mp[u][v], y - atk[v] - atk[u]);
                         }
                     }
                 }
@@ -132,13 +132,14 @@ int main() {
                 scanf("%d%d", &u, &v);
                 if (type[v]) swap(u, v);
                 if (y - atk[u] - atk[v] > 0) {
-                    flow.add(u, v, y - atk[u] - atk[v], 0);
+                    update(mp[u][v], y - atk[u] - atk[v]);
                 }
             }
         }
-        printf("%d\n", tot + flow.minCost().first);
+        REPP(i, 1, n) REPP(j, 1, n) if (mp[i][j] > 0) {
+            flow.add(i, j, inf, -mp[i][j]);
+        }
+        printf("%d\n", tot - flow.minCost().first);
     }
     return 0;
 }
-
-

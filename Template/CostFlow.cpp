@@ -1,12 +1,6 @@
-const int N = 100005;
-const int M = 100005;
-const int inf = 0x3f3f3f3f;
-
 struct MinCostFlow{
-    int pre[N], dp[N];
+    int pre[N], dp[N], vis[N], source, sink;
     int fi[N], ne[M << 1], en[M << 1], cap[M << 1], cost[M << 1], edge;
-    bool vis[N];
-    int source, sink;
 
     void init(int S, int T) {
         source = S, sink = T;
@@ -48,6 +42,7 @@ struct MinCostFlow{
     pair<int, int> minCost() {
         int cost = 0, flow = 0;
         while (spfa()) {
+            //if (dp[sink] >= 0) break; 最小费用流(不要求最大流)
             int tmp = inf;
             for (int go = pre[sink]; go; go = pre[en[go ^ 1]]) {
                 tmp = min(tmp, cap[go]);
@@ -62,3 +57,4 @@ struct MinCostFlow{
         return {cost, flow};
     }
 }flow;
+

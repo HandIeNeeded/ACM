@@ -140,9 +140,12 @@ int main()
         }
         for(int i=1; i<=n; i++)
             for(int j=1; j<=n; j++)
-                if(val[i][j]<0)
+                if(val[i][j]<0) {
+                    cout << i << ' ' << j << ' ' << val[i][j] << endl;
                     net.add(i, j, 1, val[i][j]);
+                }
         printf("%d\n", ans-net.MinCost(s, t));
     }
     return 0;
 }
+
