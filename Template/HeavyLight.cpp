@@ -37,9 +37,9 @@ int query(int a, int b) {
         ans = max(ans, query(1, 1, n));
         b = pre[top[b]];
     }
-    if (dep[a] > dep[b]) {
-        swap(a, b);
-    }
+    //if (a == b) return ans; edge
+    if (dep[a] > dep[b]) swap(a, b);
+    //ql = pos[son[a]], qr = pos[b]; edge
     ql = pos[a], qr = pos[b];
     ans = max(ans, query(1, 1, n));
     return ans;
