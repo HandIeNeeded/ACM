@@ -12,7 +12,7 @@
 using namespace std;
 
 const int N = 2e5 + 5;
-int top[N], pos[N], pre[N], son[N], key[N], size[N], inv[N], dep[N], now;
+int top[N], pos[N], pre[N], son[N], key[N], size[N], dep[N], now;
 int fi[N], ne[N << 1], en[N << 1], id[N << 1], edge;
 
 LL a[N << 2], b[N], len[N], val[N << 1];
@@ -39,7 +39,7 @@ void dfs(int x, int p) {
 }
 
 void divide(int x, int tp, LL num, int idx) {
-    b[now] = num, pos[x] = now, inv[idx] = now++;
+    b[now] = num, pos[x] = now++;
     top[x] = tp;
     if (son[x]) divide(son[x], tp, len[x], key[x]);
     for (int go = fi[x]; go; go = ne[go]) {
@@ -132,6 +132,8 @@ LL query(int a, int b) {
     return ans;
 }
 
+int A[N], B[N];
+
 int main() {
 #ifdef HOME
     freopen("in", "r", stdin);
@@ -140,39 +142,34 @@ int main() {
     edge = now = 1;
     REPP(i, 1, n - 1) {
         LL x, y, z;
-        scanf("%I64d%I64d%I64d", &x, &y, &z);
+        scanf("%lld%lld%lld", &x, &y, &z);
+        A[i] = x, B[i] = y;
         add(x, y, z);
         add(y, x, z);
-        id[edge] = id[edge ^ 1] = i;
     }
     dfs(1, 0);
     b[1] = 1;
     divide(1, 1, 1, 0); //x tp, num id
     build(1, 1, n);
-    //REPP(i, 1, n) {
-    //    cout << b[i] << ' ';
-    //}
-    //cout << endl;
     while (m--) {
         LL type, x, y, z;
-        scanf("%I64d", &type);
+        scanf("%lld", &type);
         if (type == 1) {
-            scanf("%I64d%I64d%I64d", &x, &y, &z);
+            scanf("%lld%lld%lld", &x, &y, &z);
             LL ans = query(x, y);
             if (ans == 0) {
                 puts("0");
             }
             else {
-                printf("%I64d\n", z / ans);
+                printf("%lld\n", z / ans);
             }
         }
         else {
-            scanf("%I64d%I64d", &x, &y);
-            qx = inv[x], qd = y;
+            scanf("%lld%lld", &x, &y);
+            qx = max(pos[A[x]], pos[B[x]]), qd = y;
             update(1, 1, n);
         }
     }
     return 0;
 }
-
 
