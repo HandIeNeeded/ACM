@@ -6,9 +6,13 @@
 
 using namespace std;
 
-const int N = 1e5 + 5;
-int a[N];
-int dp[N], prefix[N];
+const int N = 300;
+int a[100006];
+LL dp[2][N];
+
+void update(LL &x, LL y) {
+    if (x < y) x = y;
+}
 
 int main() {
 #ifdef HOME
@@ -16,26 +20,27 @@ int main() {
 #endif
     int n;
     scanf("%d", &n);
-    REP(i, n) scanf("%x", a + i);
-    LL ans = LLONG_MIN;
-    if (n >= 2000) {
-        LL now = 0;
-        REP(i, n) now += i ^ a[i];
-        ans = max(ans, now);
-    }
-    else {
-        REPP(j, 1, n) dp[j] = a[j - 1], prefix[j] = max(prefix[j - 1], dp[j]);
-        ans = max(ans, 1LL * prefix[n]);
-        REPP(i, 2, n) {
-            REPP(j, 1, n) {
-                dp[j] = ((i - 1) ^ a[j - 1]) + prefix[j - 1];
+    REPP(i, 1, n) scanf("%x", a + i);
+    memset(dp, -1, sizeof(dp));
+    int cur = 0;
+    dp[cur][0] = 0;
+    REPP(i, 1, n) {
+        REP(j, N) if (j <= i) {
+            if (j == i) {
+                dp[cur ^ 1][j] = 0;
+                continue;
             }
-            REPP(j, 1, n) {
-                prefix[j] = max(prefix[j - 1], dp[j]);
-            }
-            ans = max(ans, 1LL * prefix[n]);
+            //not choose
+            if (j - 1 >= 0 && dp[cur][j - 1] >= 0) update(dp[cur ^ 1][j], dp[cur][j - 1]);
+
+            //choose
+            if (dp[cur][j] >= 0) update(dp[cur ^ 1][j], dp[cur][j] + (a[i] ^ (i - j - 1)));
         }
+        memset(dp[cur], -1, sizeof(dp[cur]));
+        cur ^= 1;
     }
+    LL ans = LLONG_MIN;
+    REP(i, N) ans = max(ans, dp[cur][i]);
     cout << ans << endl;
     return 0;
 }
