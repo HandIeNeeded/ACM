@@ -9,7 +9,7 @@ using namespace std;
 const int N = 105;
 long long a[N];
 
-void Guass(int n, int &now) {
+void Gauss(int n, int &now) {
 	now = 1;
 	REP(i, 60) {
 		if (now > n) break;
@@ -30,11 +30,6 @@ void Guass(int n, int &now) {
 				}
 			}
 		}
-		//cout << i << endl;
-		//REPP(j, 1, n) {
-		//	cout << a[j] << ' ';
-		//}
-		//cout << "*****************************" << endl;
 	}
 }
 
@@ -46,7 +41,7 @@ int main() {
 		cin >> a[i];
 	}
 	int now;
-	Guass(n, now);
+	Gauss(n, now);
 	long long ans = 0;
 	REPP(i, 1, now) ans ^= a[i];
 	cout << ans << endl;

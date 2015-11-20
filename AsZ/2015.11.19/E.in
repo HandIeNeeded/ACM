@@ -1,0 +1,19 @@
+1
+6
+START = FIRST + SECOND
+FIRST = D + D
+D = E + E
+E = F + F
+SECOND = F + E
+F = bad
+START
+aaaaaaaaaaaa
+6
+START = FIRST + SECOND
+FIRST = D + E
+SECOND = F + E
+D = good
+E = times
+F = bad
+START
+debate

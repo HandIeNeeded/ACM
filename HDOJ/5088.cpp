@@ -1,22 +1,5 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
-#include <cmath>
-#include <ctime>
-#include <cassert>
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <vector>
-#include <set>
-#include <map>
-#include <queue>
-#include <deque>
-#include <bitset>
-#include <algorithm>
+#include <bits/stdc++.h>
 
-#define MST(a, b) memset(a, b, sizeof(a))
 #define REP(i, a) for (int i = 0; i < int(a); i++)
 #define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
 
@@ -27,26 +10,27 @@ long long a[N];
 
 int Gauss(int n) {
 	long long bit = 1LL << 60;
-	int now = 1;
+	int rank = 1;
 	REP(turn, 60) {
 		bit >>= 1;
 		int find = 0;
-		REPP(i, now, n) {
+		REPP(i, rank, n) {
 			if (a[i] & bit) {
 				find = 1;
-				swap(a[now], a[i]);
+				swap(a[rank], a[i]);
 				break;
 			}
 		}
 		if (!find) continue;
 		REPP(i, 1, n) {
-			if (i != now && (a[i] & bit)) {
-				a[i] ^= a[now];
+			if (i != rank && (a[i] & bit)) {
+				a[i] ^= a[rank];
 			}
 		}
-		now++;
+		rank++;
 	}
-	return now - 1;
+    rank--;
+	return rank;
 }
 
 int main() {
