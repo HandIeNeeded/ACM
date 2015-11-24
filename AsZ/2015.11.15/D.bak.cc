@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int inf = 1e9;
+const int inf = 0x3f3f3f3f;
 
 template<int N, int M, typename T>
 struct MF{
@@ -29,14 +29,14 @@ struct MF{
     }
 
     bool bfs() {
-        memset(lvl, -1, sizeof(lvl));
+        memset(lvl, 0x3f, sizeof(lvl));
         queue<int> q;
         lvl[source] = 1, q.push(source);
         while (q.size()) {
             int x = q.front(); q.pop();
             for (int go = fi[x]; go; go = ne[go]) if (cap[go] > 0) {
                 int y = en[go];
-                if (lvl[y] < 0) {
+                if (lvl[y] > lvl[x] + 1) {
                     lvl[y] = lvl[x] + 1;
                     q.push(y);
                 }
@@ -62,7 +62,6 @@ struct MF{
     T dinic() {
         T ans = 0;
         while (bfs()) {
-            cout << "hehe" << endl;
             memcpy(cur, fi, sizeof(fi));
             ans += dfs(source, inf);
         }
@@ -85,7 +84,7 @@ int main() {
         REPP(i, 1, m) {
             int a, b, c;
             scanf("%d%d%d", &a, &b, &c);
-            flow.add(a, b, c);
+            flow.add(a + n, b, c);
         }
         REPP(i, 1, n) {
             int c;
@@ -96,9 +95,6 @@ int main() {
             int c;
             scanf("%d", &c);
             flow.add(i, i + n, c);
-        }
-        REPP(i, 1, n) if (i != x) {
-            flow.add(i + n, x + n, inf);
         }
         printf("%d\n", flow.dinic());
     }

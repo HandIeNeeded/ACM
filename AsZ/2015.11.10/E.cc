@@ -7,24 +7,20 @@
 using namespace std;
 
 const int N = (1 << 18) + 5;
-const int K = 20;
+const int L = 20;
 const int MO = 1e9 + 7;
-const int Inv = (1 + MO) / 2;
 
-int a[N], fac[N], inv[N], p[N][K];
+int fac[N], finv[N], inv[N], a[N], pw[L];
 
 void init() {
-    fac[0] = fac[1] = inv[0] = inv[1] = 1;
+    pw[0] = 1;
+    REPP(i, 1, L - 1) pw[i] = pw[i - 1] << 1;
+    fac[0] = fac[1] = inv[1] = finv[0] = 1;
     REPP(i, 2, N - 1) {
         fac[i] = 1LL * fac[i - 1] * i % MO;
         inv[i] = MO - 1LL * MO / i * inv[MO % i] % MO;
     }
-    REPP(i, 1, N - 1) inv[i] = 1LL * inv[i] * inv[i - 1] % MO;
-}
-
-int C(int x, int y) {
-    if (x < 0 || y < 0 || x < y) return 0;
-    return 1LL * fac[x] * inv[y] % MO * inv[x - y] % MO;
+    REPP(i, 1, N - 1) finv[i] = 1LL * inv[i] * finv[i - 1] % MO;
 }
 
 void add(int &x, int y) {
@@ -32,8 +28,9 @@ void add(int &x, int y) {
     if (x >= MO) x -= MO;
 }
 
-int sqr(int x) {
-    return 1LL * x * x % MO;
+int C(int x, int y) {
+    if (x < 0 || y < 0 || x < y) return 0;
+    return 1LL * fac[x] * finv[y] % MO * finv[x - y] % MO;
 }
 
 int pow_mod(int a, int b, int mod = MO) {
@@ -48,11 +45,12 @@ int pow_mod(int a, int b, int mod = MO) {
     return ans;
 }
 
-int k, n;
+int Inv(int x) {
+    return pow_mod(x, MO - 2);
+}
 
-int get(int i, int j) {
-    int need = 1 << j;
-    return 1LL * C(n - i, need - 1) * pow_mod(C(n - 1, need - 1), MO - 2) % MO;
+int sqr(int x) {
+    return 1LL * x * x % MO;
 }
 
 int main() {
@@ -61,29 +59,48 @@ int main() {
 #endif
 
     init();
-
-    scanf("%d", &k);
-    n = 1 << k;
+    int K, n;
+    scanf("%d", &K);
+    n = 1 << K;
     REPP(i, 1, n) scanf("%d", a + i);
-    REPP(i, 1, n) p[i][0] = 1;
     int ans = 0;
-    REPP(turn, 1, k) {
-        int sum = 0, tot = 0;
-        REPP(i, 1, n) {
-            add(sum, 1LL * p[i][turn - 1] * a[i] % MO);
-            add(tot, sqr(1LL * p[i][turn - 1] * a[i] % MO));
+    REPP(i, 1, K) {
+        int now = 1LL * sqr(fac[pw[K - i]]) * fac[n - pw[K - i + 1]] % MO;
+        now = 2LL * now * pw[i - 1] % MO;
+        int tmp = C(n - 2, pw[K - i] - 1);
+        int res = 0;
+        REPP(j, 2, n) {
+            add(res, 1LL * a[j] * tmp % MO);
+            tmp = 1LL * tmp * (n - j - pw[K - i] + 1) % MO * inv[n - j] % MO;
+            if (tmp == 0) break;
         }
-        int tmp = sqr(sum);
-        add(tmp, MO - tot);
-        tmp = 1LL * tmp * Inv % MO;
-        tmp = 1LL * tmp * pow_mod(2, k - turn) % MO * pow_mod(C(1 << (k - turn + 1), 2), MO - 2) % MO;
-        add(ans, tmp);
-        REPP(i, 1, n) {
-            p[i][turn] = get(i, turn);
+        int sum = res;
+        //cout << "sum : " << sum << endl;
+        int cof = C(n - 1 - pw[K - i], pw[K - i] - 1);
+        res = 1LL * cof * res % MO;
+        res = 1LL * a[1] * res % MO;
+        add(ans, 1LL * res * now % MO);
+        //cout << "ans " << ans << endl;
+        tmp = C(n - 2, pw[K - i] - 1);
+        cof = C(n - 2 - pw[K - i], pw[K - i] - 1);
+        REPP(j, 2, n) {
+            add(sum, MO - 1LL * a[j] * tmp % MO);
+            int need = 1LL * sum * cof % MO;
+            need = 1LL * need * a[j] % MO;
+            //cout << need << endl;
+            add(ans, 1LL * need * now % MO);
+            tmp = 1LL * tmp * (n - j - pw[K - i] + 1) % MO * inv[n - j] % MO;
+            if (n - j - pw[K - i] <= 0) cof = 0;
+            else cof = 1LL * cof * (n - j - pw[K - i + 1] + 1) % MO * inv[n - j - pw[K - i]] % MO;
         }
+        //cout << ans << endl;
     }
+    //cout << ans << endl;
+    ans = 1LL * ans * finv[n] % MO;
     cout << ans << endl;
-
     return 0;
 }
+//2
+//1 2 3 4
+//ans = 336/24 = (280 + 56) / 24
 
