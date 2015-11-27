@@ -1,3 +1,14 @@
+#include <bits/stdc++.h>
+
+#define LL long long
+#define REP(i, a) REPP(i, 0, (a) - 1)
+#define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
+
+using namespace std;
+
+const int N = 500;
+const int M = N * N;
+
 struct MCF{
     int fi[N], en[M << 1], ne[M << 1], cost[M << 1], cap[M << 1], edge;
     int dis[N], vis[N], source, sink, per;
@@ -57,7 +68,7 @@ struct MCF{
         REP(i, sink + 1) {
             for (int go = fi[i]; go; go = ne[go]) {
                 int y = en[go];
-                cap[go] += dis[y] - dis[i];
+                cost[go] += dis[y] - dis[i];
             }
         }
         per += dis[source];
@@ -67,6 +78,7 @@ struct MCF{
     pair<int, int> minCost() {
         int flow = 0, cost = 0;
         while (modLable()) {
+            cout << "hehe" << endl;
             memset(vis, 0, sizeof(vis));
             int x, y;
             tie(x, y) = aug(source, inf);
@@ -75,4 +87,42 @@ struct MCF{
         return {cost, flow};
     }
 }flow;
+
+int a[N], *b[N], w[N];
+
+bool cmp(int *a, int *b) {
+    return *a < *b;
+}
+
+int main() {
+#ifdef HOME
+    freopen("3680.in", "r", stdin);
+#endif
+
+     int t;
+     scanf("%d", &t);
+     while (t--) {
+         int m, k;
+         scanf("%d %d", &m, &k);
+         int now = 0;
+         REP(i, m) {
+             scanf("%d", b[now] = &a[now]), now++;
+             scanf("%d", b[now] = &a[now]), now++;
+             scanf("%d", w + i);
+         }
+         sort(&b[0], &b[now], cmp);
+         int c = INT_MAX, n = 0;
+         REP(i, now) {
+             if (c != *b[i]) c = *b[i], ++n;
+             *b[i] = n;
+         }
+         ++n, flow.init(0, n++);
+         REP(i, flow.sink) flow.add(i, i + 1, 0, k);
+         REP(i, m) flow.add(a[i + i], a[i + i + 1], 1, -w[i]);
+         int cost, ans;
+         tie(cost, ans) = flow.minCost();
+         printf("%d\n", -cost);
+     }
+    return 0;
+}
 
