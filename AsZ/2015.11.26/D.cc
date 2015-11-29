@@ -28,7 +28,7 @@ int main() {
         m <<= 1;
         REPP(i, 1, n) scanf("%d%d", a + i, v + i), a[i] <<= 1;
         int cur = 0;
-        memset(dp, 0, sizeof(dp));
+        memset(dp[0], 0, sizeof(dp[0]));
         REPP(i, 1, n) {
             for (int j = m; j >= 1; j--) {
                 dp[cur ^ 1][2][j] = dp[cur][2][j];
