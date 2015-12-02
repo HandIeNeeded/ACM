@@ -23,10 +23,10 @@ int main() {
     REPP(i, 1, n) cin >> a[i], tot += a[i];
     int cur = 0;
     REPP(i, 1, m) {
-        dp[cur][i] = i == a[1] ? 0 : 1.0 / (m - 1);
+        dp[cur][i] = (i == a[1] ? 0 : 1.0 / (m - 1));
     }
     REPP(i, 1, 2 * m) sum[i] = sum[i - 1] + dp[cur][i];
-    REPP(i, m, 2 * m) sum[i] -= sum[i - m];
+    for (int i = 2 * m; i >= m; i--) sum[i] -= sum[i - m];
     REPP(i, 2, n) {
         for (int j = 1; j <= i * m; j++) {
             dp[cur ^ 1][j] = sum[j - 1] / (m - 1);
@@ -36,7 +36,7 @@ int main() {
         REPP(j, 1, (i + 1) * m) {
             sum[j] = sum[j - 1] + dp[cur][j];
         }
-        REPP(j, m, (i + 1) * m) {
+        for (int j = (i + 1) * m; j >= m; j--) {
             sum[j] -= sum[j - m];
         }
     }

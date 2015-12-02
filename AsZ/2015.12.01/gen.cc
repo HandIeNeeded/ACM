@@ -16,10 +16,14 @@ int main() {
     //freopen("tmp.in", "w", stdout);
 	srand(time(0) % clock());
     int t = 1;
-    //cout << t << endl;
+    cout << t << endl;
     REP(i, t) {
-        int n = rand() % 1000000000, m = rand() % 1000000000;
-        cout << n << ' ' << m << endl;
+        int W = rand() % 10 + 1, H = rand() % 10 + 1;
+        int n = rand() % 4 + 3;
+        cout << n << ' ' << W << ' ' << H << endl;
+        REP(i, n) {
+            cout << rand() % 15 << ' ' << rand() % 15 << endl;
+        }
     }
 	return 0;
 }
