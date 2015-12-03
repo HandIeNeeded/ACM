@@ -6,106 +6,55 @@
 
 using namespace std;
 
-const int N = 1e5 + 5;
-char s[N];
+const int N = 55;
+const int MO = 1e9 + 7;
+int ans, n;
+string s;
 
-// DC3算法构造后缀数组 O(n)
-// sa[i] 表示排名为 i 的后缀, rank[i]表示第i个后缀的排名, height[i] 表示 sa[i] 与 sa[i - 1] 最长公共前缀
-// 求出的rank, height, sa数组和倍增算法求得的完全一样
-// 支持对于任意类型子序列进行求解，注意原序列中所有数据为正，原序列范围较大需要离散化
+void add(int &x, int y) {
+    x += y;
+    if (x >= MO) x -= MO;
+}
 
-#define F(x) ((x) / 3 + ((x) % 3 == 1 ? 0 : ty))
-#define G(x) ((x) < ty ? (x) * 3 + 1 : ((x) - ty) * 3 + 2)
-
-template<typename T = char>
-struct SuffixArray {
-    int str[N * 3], sa[N * 3], rank[N], height[N], n;
-    int wa[N], wb[N], wv[N], ws[N];
-
-    int &operator [](int k) { return sa[k]; }
-
-    int size() const { return n; }
-
-    bool equal(const int *r, int a, int b) const {
-        return r[a] == r[b] && r[a + 1] == r[b + 1] && r[a + 2] == r[b + 2];
+void dfs(int dep) {
+    if (dep == n) {
+        //cout << s << ' ' << "hehe" << endl;
+        LL a, b;
+        int pos = s.find('*');
+        if (pos == 0 || pos == int(s.size()) - 1) return ;
+        a = stoll(s.substr(0, pos));
+        string tmp = s.substr(pos + 1);
+        b = stoll(tmp);
+        //cout << a << ' ' << b << endl;
+        a %= MO, b %= MO;
+        add(ans, 1LL * a * b % MO);
     }
-
-    bool cmp(const int *r, int a, int b, int d) const {
-        if (d == 1) return (r[a] < r[b]) || (r[a] == r[b] && wv[a + 1] < wv[b + 1]);
-        return (r[a] < r[b]) || (r[a] == r[b] && cmp(r, a + 1, b + 1, 1));
-    }
-
-    void rsort(const int *r, const int *a, int *b, int n, int m) {
-        int i;
-        fill(ws, ws + m, 0);
-        for (i = 0; i < n; ++i) ++ws[wv[i] = r[a[i]]];
-        for (i = 1; i < m; ++i) ws[i] += ws[i - 1];
-        for (i = n - 1; ~i; --i) b[--ws[wv[i]]] = a[i];
-    }
-
-    void dc3(int *r, int *sa, int n, int m) {
-        int i, j, k, *rn = r + n, *san = sa + n, tx = 0, ty = (n + 1) / 3, tz = 0;
-
-        r[n] = r[n + 1] = 0;
-        for (i = 0; i < n; ++i) {
-            if (i % 3) wa[tz++] = i;
-        }
-        rsort(r + 2, wa, wb, tz, m);
-        rsort(r + 1, wb, wa, tz, m);
-        rsort(r, wa, wb, tz, m);
-        for (rn[F(wb[0])] = 0, k = i = 1; i < tz; ++i) {
-            rn[F(wb[i])] = equal(r, wb[i - 1], wb[i]) ? k - 1 : k++;
-        }
-        if (k < tz) dc3(rn, san, tz, k);
-        else {
-            for (i = 0; i < tz; ++i) san[rn[i]] = i;
-        }
-        for (i = 0; i < tz; ++i) {
-            if (san[i] < ty) wb[tx++] = san[i] * 3;
-        }
-        if (n % 3 == 1) wb[tx++] = n - 1;
-        rsort(r, wb, wa, tx, m);
-        for (i = 0; i < tz; ++i) wv[wb[i] = G(san[i])] = i;
-        for (i = j = k = 0; i < tx && j < tz; ++k) {
-            sa[k] = cmp(r, wa[i], wb[j], wb[j] % 3) ? wa[i++] : wb[j++];
-        }
-        for ( ; i < tx; ++i) sa[k++] = wa[i];
-        for ( ; j < tz; ++j) sa[k++] = wb[j];
-    }
-
-    void build(const T *s, int x, int m = 256) {//x 是原串长度不做任何修改 x==1没有问题
-        int i;
-        for (i = 0; i < x; ++i) str[i] = (int)s[i];
-        str[x] = 0; n = x + 1;
-        dc3(str, sa, n, m);
-        getHeight();
-    }
-
-    void getHeight() {
-        int i, j, k = 0;
-        for (i = 0; i < n; ++i) rank[sa[i]] = i;
-        for (i = 0; i < n; height[rank[i++]] = k) {
-            for(k ? --k : 0, j = sa[rank[i] - 1]; str[i + k] == str[j + k]; ++k);
+    else {
+        REP(i, s.size()) {
+            REPP(j, i + 1, s.size() - 1) {
+                swap(s[i], s[j]);
+                dfs(dep + 1);
+                swap(s[i], s[j]);
+                //cout << "xixi" << i << ' ' << j << ' ' << s.size() << endl;
+            }
         }
     }
-
-	void print(){
-		REP(i, n) cout << sa[i] << " \n"[i == n - 1];
-		REP(i, n) cout << rank[i] << " \n"[i == n - 1];
-		REP(i, n) cout << height[i] << " \n"[i == n - 1];
-	}
-};
-SuffixArray<char> SA;
+}
 
 int main() {
 #ifdef HOME
-    freopen("tmp.in", "r", stdin);
+    //freopen("in", "r", stdin);
 #endif
 
-    cin >> s;
-    int n = strlen(s);
-    SA.build(s, n);
-    SA.print();
+    int t, ca = 1;
+    cin >> t;
+    while (t--) {
+        cin >> n >> s;
+        ans = 0;
+        dfs(0);
+        cout << "Case #" << ca++ << ": " << ans << endl;
+    }
 
     return 0;
 }
+

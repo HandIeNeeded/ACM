@@ -23,7 +23,7 @@ int get(int x) {
 
 int main() {
 #ifdef HOME
-    //freopen("5576.in", "r", stdin);
+    freopen("5576.in", "r", stdin);
 #endif
 
     pw[0] = 1;
@@ -83,9 +83,7 @@ int main() {
         }
         int ans = 0;
         REPP(x, 1, length) REPP(y, 1, length) REPP(z, 1, length) if ((x < z && z < y) || (x > z && z > y)) {
-            //cout << "hehe " << x << ' ' << y << ' ' << z << ' ' << dp[n][x][y][z] << endl;
             add(ans, 1LL * dp[n][x][y][z] * pw[z - x - 1 + length - y] % MO);
-            //cout << ans << endl;
         }
         printf("Case #%d: %d\n", ca++, ans);
     }

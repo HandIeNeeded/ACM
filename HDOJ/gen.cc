@@ -16,11 +16,19 @@ int main() {
 
     srand(time(0) % clock());
 
-    int n = 10;
-    REP(i, n) {
-        cout << char(rand() % 26 + 'a');
+    int t = 1;
+    cout << t << endl;
+    REP(i, t) {
+        int n = rand() % 3 + 1;
+        int length = rand() % 15 + 2;
+        string s;
+        REP(i, length) {
+            s += char('0' + rand() % 10);
+        }
+        int pos = rand() % s.size();
+        s.insert(pos, 1, '*');
+        cout << n << endl << s << endl;
     }
-    cout << endl;
 
     return 0;
 }
