@@ -3,11 +3,13 @@
 #define LL long long
 #define REP(i, a) REPP(i, 0, (a) - 1)
 #define REPP(i, a, b) for (int i = int(a); i <= int(b); i++)
+#define ALL(a) (a).begin(), (a).end()
 
 using namespace std;
 
 const int N = 1e5 + 5;
-int a[N];
+int a[N], dp[N];
+vector<int> num;
 
 int main() {
     freopen("fragmentation.in", "r", stdin);
@@ -19,21 +21,13 @@ int main() {
     scanf("%d", &n);
     REPP(i, 1, n) {
         scanf("%d", a + i);
+        num.push_back(a[i]);
     }
-    int ans = 0;
-    vector<int> num;
-    a[n + 1] = 0;
-    REPP(i, 1, n) {
-        int j = i;
-        while (a[j + 1] >= a[j]) j++;
-        ans++;
-        num.push_back(j + 1 - i);
-        i = j;
-    }
-    printf("%d\n", ans);
-    REP(i, num.size()) {
-        printf("%d%c", num[i], " \n"[i == int(num.size()) - 1]);
-    }
+    sort(ALL(num));
+    num.resize(unique(ALL(num)) - num.begin());
+    REPP(i, 1, n) a[i] = lower_bound(ALL(num), a[i]) - num.begin() + 1;
+    
+
 
 
     return 0;
